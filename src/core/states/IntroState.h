@@ -22,8 +22,10 @@ public:
 
     void handleEvents();
     void update();
-    void draw(EngineRenderer *renderer);
+    void drawText();
+    void drawGl();
 protected:
+    std::string name = "IntroState";
 private:
 };
 

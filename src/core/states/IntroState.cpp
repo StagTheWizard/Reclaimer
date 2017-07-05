@@ -3,7 +3,8 @@
 //
 
 #include "IntroState.h"
-#include "core/EngineRenderer.h"
+
+#include "core/TextRenderer.h"
 
 
 IntroState::IntroState(Engine *engine) : State(engine) {}
@@ -32,6 +33,12 @@ void IntroState::handleEvents() {}
 void IntroState::update() {}
 
 
-void IntroState::draw(EngineRenderer *renderer) {
-    renderer->renderText(INTRO_TEXT, Font::DEFAULT, 16, glm::vec2(20, 20));
+void IntroState::drawText() {
+    engine->textRenderer->render(INTRO_TEXT, Font::DEFAULT, 18, glm::vec2(20, 20));
+    engine->textRenderer->render(this->name, Font::DEFAULT, 14, glm::vec2(20, 40));
+}
+
+
+void IntroState::drawGl() {
+
 }

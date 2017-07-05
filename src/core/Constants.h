@@ -10,7 +10,7 @@ namespace constants {
     int WINDOW_WIDTH = 640;
     int WINDOW_HEIGHT = 480;
     std::string VERSION = "0.1";
-    std::string WINDOW_TITLE = "Reclaimer" + VERSION;
+    std::string WINDOW_TITLE = "Reclaimer " + VERSION;
 }
 
 #endif //RECLAIMER_CONSTANTS_H

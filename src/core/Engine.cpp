@@ -6,8 +6,13 @@
 
 #include <SFML/OpenGL.hpp>
 
+#include "states/State.h"
+#include "TextRenderer.h"
 
-Engine::Engine() {}
+
+Engine::Engine() {
+    this->textRenderer = new TextRenderer(this);
+}
 
 
 Engine::~Engine() {}
@@ -15,13 +20,14 @@ Engine::~Engine() {}
 
 int Engine::initialise() {
     // create the window
-    window = new sf::Window(sf::VideoMode(800, 600), "Reclaimer", sf::Style::Default, sf::ContextSettings(32));
+    window = new sf::RenderWindow(sf::VideoMode(800, 600), "Reclaimer", sf::Style::Default, sf::ContextSettings(32));
     window->setVerticalSyncEnabled(true);
 
     // activate the window
     window->setActive(true);
 
     // load resources
+    textRenderer->initialise();
     // initialise OpenGL states
 
     return EXIT_SUCCESS;
@@ -46,9 +52,6 @@ int Engine::start() {
             }
         }
 
-        // clear the buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         // update
         this->update();
 
@@ -67,10 +70,14 @@ int Engine::start() {
 void Engine::changeState(State *state) {}
 
 
-void Engine::pushState(State *state) {}
+void Engine::pushState(State *state) {
+    states.push_back(state);
+}
 
 
-void Engine::popState() {}
+void Engine::popState() {
+    states.pop_back();
+}
 
 
 void Engine::handleEvents() {}
@@ -79,7 +86,22 @@ void Engine::handleEvents() {}
 void Engine::update() {}
 
 
-void Engine::draw() {}
+void Engine::draw() {
+    if (states.size() < 1) return;
+    State* currentState = states[0];
+    // push OpenGL state
+    // clear the buffers
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // render OpenGL
+    //glDraw..
+
+    window->clear(sf::Color::Black);
+//    window->pushGLStates();
+    // render SFML
+    currentState->drawText();
+    // pop SFML state
+//    window->popGLStates();
+}
 
 
 int Engine::quit() {

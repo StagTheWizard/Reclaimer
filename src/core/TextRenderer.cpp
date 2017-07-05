@@ -2,28 +2,32 @@
 // Created by montgomery anderson on 30/06/17.
 //
 
-#include "TextRenderModule.h"
+#include "TextRenderer.h"
+
 #include <cstdlib>
 #include <vector>
-#include <glm/vec2.hpp>
 #include <iostream>
 
-
-TextRenderModule::TextRenderModule() {}
-
-
-TextRenderModule::~TextRenderModule() {}
+#include "Engine.h"
 
 
-int TextRenderModule::initialise() {
-    initialiseShaders();
+TextRenderer::TextRenderer(Engine *engine) {
+    this->engine = engine;
+}
+
+
+TextRenderer::~TextRenderer() {}
+
+
+int TextRenderer::initialise() {
+    //initialiseShaders();
     initialiseFonts();
 
     return EXIT_SUCCESS;
 }
 
 
-int TextRenderModule::initialiseShaders() {
+int TextRenderer::initialiseShaders() {
     textShader = new TextShaderProgram();
     textShader->initialise();
     textShader->bindUniforms();
@@ -32,19 +36,49 @@ int TextRenderModule::initialiseShaders() {
 }
 
 
-int TextRenderModule::initialiseFonts() {
-    initialiseFont(MENLO);
+int TextRenderer::initialiseFonts() {
+    // Initialise menlo
+    if (!menlo.loadFromFile(menloPath)) {
+        std::cerr << "SFML.Graphis.Font.loadfromFile failed" << std::endl;
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 
 
-int TextRenderModule::initialiseFont(Font font) {
-
-    return EXIT_SUCCESS;
+void TextRenderer::render(std::string textStr, Font fontEnum, int size, glm::vec2 pos) {
+    render(textStr, fontEnum, size, pos, glm::vec4(1., 1., 1., 1.));
 }
 
 
-void TextRenderModule::print(std::string text, Font font, int size, glm::vec2 pos) {
+void TextRenderer::render(std::string textStr, Font fontEnum, int size, glm::vec2 pos, glm::vec3 color) {
+    render(textStr, fontEnum, size, pos, glm::vec4(color, 1.));
+}
+
+
+void TextRenderer::render(std::string textStr, Font fontEnum, int size,
+                          glm::vec2 pos, glm::vec4 color) {
+    sf::Text text;
+    // select the font
+    sf::Font font;
+    switch(fontEnum) {
+        case DEFAULT:
+            font = menlo;
+            break;
+        case MENLO:
+            font = menlo;
+            break;
+    }
+    text.setFont(font);
+
+    // set the string to render
+    text.setString(textStr);
+    text.setCharacterSize(size);
+    sf::Color sfColor = sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+    text.setFillColor(sfColor);
+    text.setPosition(pos.x, pos.y);
+    text.setStyle(sf::Text::Bold);
+    engine->window->draw(text);
     /*std::string line = "";
     std::vector<std::string> lines;
     std::string::iterator itr;

@@ -9,8 +9,15 @@
 #include <string>
 #include <map>
 #include <SFML/OpenGL.hpp>
+#include <SFML/Graphics.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include "shaders/TextShaderProgram.h"
+
+
+class Engine;
 
 
 enum Font {
@@ -23,29 +30,29 @@ enum Font {
  * The TextRenderModule is simply a module of the EngineRenderer responsible for all
  * rendering code relevant to text rendering.
  */
-class TextRenderModule {
+class TextRenderer {
 public:
-    TextRenderModule();
-    ~TextRenderModule();
+    TextRenderer(Engine* engine);
+    ~TextRenderer();
 
     int initialise();
-    void print(std::string text, Font font, int size, glm::vec2 pos);
+    void render(std::string textStr, Font fontEnum, int size, glm::vec2 pos);
+    void render(std::string textStr, Font fontEnum, int size, glm::vec2 pos, glm::vec3 color);
+    void render(std::string textStr, Font fontEnum, int size, glm::vec2 pos, glm::vec4 color);
 protected:
 private:
+    Engine* engine;
     TextShaderProgram *textShader;
 
     GLuint vao;
     GLuint vertexBuffer;
     GLuint uvBuffer;
 
-    std::map<Font, std::string> fontPathMap = {
-            { Font::DEFAULT, "assets/fonts/Menlo-Regular.ttf"},
-            { Font::MENLO, "assets/fonts/Menlo-Regular.ttf"},
-    };
-
     int initialiseShaders();
     int initialiseFonts();
-    int initialiseFont(Font font);
+
+    sf::Font menlo;
+    std::string menloPath = "assets/fonts/Menlo-Regular.ttf";
 };
 
 #endif //RECLAIMER_TEXTRENDERMODULE_H

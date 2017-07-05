@@ -7,17 +7,22 @@
 
 
 class State;
-class EngineRenderer;
+class TextRenderer;
 
 
 #include <vector>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "Camera.h"
 
 
 class Engine {
 public:
+    sf::RenderWindow *window;
+
+    TextRenderer *textRenderer;
+
     Engine();
     ~Engine();
 
@@ -37,9 +42,7 @@ public:
     void draw();
     int quit();
 private:
-    sf::Window *window;
     Camera *camera;
-    EngineRenderer *renderer;
 
     std::vector<State *> states;
 

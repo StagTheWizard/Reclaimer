@@ -7,6 +7,14 @@ set(CMAKE_CXX_STANDARD 14)
 # Define sources and executable
 set(EXECUTABLE_NAME "Reclaimer")
 
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build)
+endif()
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+
 include_directories(src)
 
 file(GLOB PROJECT_SOURCES
@@ -16,11 +24,8 @@ file(GLOB PROJECT_SOURCES
         src/core/Engine.h
         src/core/Engine.cpp
 
-        src/core/EngineRenderer.h
-        src/core/EngineRenderer.cpp
-
-        src/core/TextRenderModule.h
-        src/core/TextRenderModule.cpp
+        src/core/TextRenderer.h
+        src/core/TextRenderer.cpp
 
         src/core/shaders/ShaderProgram.h
         src/core/shaders/ShaderProgram.cpp
@@ -73,14 +78,6 @@ add_executable(Reclaimer
         ${PROJECT_CONFIGS})
 
 
-if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build/)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/)
-endif()
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/)
-
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
-
 # OpenGL
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
@@ -105,7 +102,6 @@ if(SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
     target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 endif()
-
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
