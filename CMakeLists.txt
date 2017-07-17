@@ -39,6 +39,8 @@ file(GLOB PROJECT_SOURCES
         src/core/states/State.cpp
         src/core/states/IntroState.h
         src/core/states/IntroState.cpp
+        src/core/states/GameState.h
+        src/core/states/GameState.cpp
         )
 
 set(PROJECT_SHADERS
