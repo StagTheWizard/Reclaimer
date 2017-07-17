@@ -34,6 +34,8 @@ file(GLOB PROJECT_SOURCES
 
         src/core/Camera.h
         src/core/Camera.cpp
+        src/core/timing/Timer.h
+        src/core/timing/Timer.cpp
 
         src/core/states/State.h
         src/core/states/State.cpp

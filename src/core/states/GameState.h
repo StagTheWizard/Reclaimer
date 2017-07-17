@@ -14,7 +14,7 @@
 class Engine;
 
 
-class GameState : State {
+class GameState : public State {
 public:
     GameState(Engine *engine);
     ~GameState();
