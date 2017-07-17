@@ -7,6 +7,8 @@
 
 
 #include <ctime>
+#include <string>
+#include <chrono>
 
 
 class Timer {
@@ -21,11 +23,12 @@ public:
     long minutes();
     long seconds();
     long milliseconds();
+
+    std::string str();
 protected:
 private:
-    float duration();
 
-    std::clock_t startTime;
+    std::chrono::high_resolution_clock::time_point startTime;
 };
 
 

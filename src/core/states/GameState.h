@@ -9,6 +9,7 @@
 #include "State.h"
 
 #include <string>
+#include <core/timing/Timer.h>
 
 
 class Engine;
@@ -31,7 +32,9 @@ public:
     void drawGl();
 protected:
     std::string name = "GameState";
+    std::string runTime;
 private:
+    Timer timer;
 };
 
 

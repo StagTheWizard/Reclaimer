@@ -7,9 +7,12 @@
 
 #include "State.h"
 
+#include "core/timing/Timer.h"
+
 class IntroState : public State {
 public:
     const std::string INTRO_TEXT = "Reclaimer 0.1";
+    const int INTRO_DURATION = 4;
 
     IntroState(Engine *engine);
     ~IntroState();
@@ -26,7 +29,9 @@ public:
     void drawGl();
 protected:
     std::string name = "IntroState";
+    std::string runTime;
 private:
+    Timer timer;
 };
 
 

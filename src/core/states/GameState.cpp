@@ -13,6 +13,7 @@ GameState::~GameState() {}
 
 
 int GameState::initialise() {
+    timer = Timer::Start();
     return EXIT_SUCCESS;
 }
 
@@ -29,11 +30,14 @@ void GameState::resume() {}
 void GameState::handleEvents() {}
 
 
-void GameState::update() {}
+void GameState::update() {
+    this->runTime = timer.str();
+}
 
 
 void GameState::drawText() {
     engine->textRenderer->render(this->name, Font::DEFAULT, 14, glm::vec2(20, 40));
+    engine->textRenderer->render(this->runTime, Font::DEFAULT, 14, glm::vec2(20, 60));
 }
 
 

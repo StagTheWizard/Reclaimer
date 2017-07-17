@@ -83,12 +83,16 @@ void Engine::popState() {
 void Engine::handleEvents() {}
 
 
-void Engine::update() {}
+void Engine::update() {
+    if (states.size() < 1) return;
+    State* currentState = states[states.size() - 1];
+    currentState->update();
+}
 
 
 void Engine::draw() {
     if (states.size() < 1) return;
-    State* currentState = states[0];
+    State* currentState = states[states.size() - 1];
     // push OpenGL state
     // clear the buffers
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
