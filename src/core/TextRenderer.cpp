@@ -115,7 +115,10 @@ void TextRenderer::render(std::string textStr, Font fontEnum, int size,
             glm::vec2 vertex_bottom_left    = glm::vec2(pos.x + xAdvance,
                                                         pos.y - yAdvance + size + fchar->height);
 
-            xAdvance += fchar->bitmapWidth;
+            if (ch == ' ')
+                xAdvance += fchar->advanceX;
+            else
+                xAdvance += fchar->bitmapWidth + 1;
 
             vertices.push_back(vertex_top_right);
             vertices.push_back(vertex_bottom_left);
