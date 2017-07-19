@@ -8,16 +8,19 @@
 
 #include <string>
 #include <map>
-#include <SFML/OpenGL.hpp>
-#include <SFML/Graphics.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 #include "shaders/TextShaderProgram.h"
 
 
 class Engine;
+class FontTextureAtlas;
 
 
 enum Font {
@@ -48,10 +51,11 @@ private:
     GLuint vertexBuffer;
     GLuint uvBuffer;
 
+    FontTextureAtlas* menloAtlas_12pt;
+
     int initialiseShaders();
     int initialiseFonts();
 
-    sf::Font menlo;
     std::string menloPath = "assets/fonts/Menlo-Regular.ttf";
 };
 

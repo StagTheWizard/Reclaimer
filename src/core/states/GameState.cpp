@@ -3,6 +3,7 @@
 //
 
 #include <core/TextRenderer.h>
+#include <core/Constants.h>
 #include "GameState.h"
 
 
@@ -14,6 +15,11 @@ GameState::~GameState() {}
 
 int GameState::initialise() {
     timer = Timer::Start();
+
+    // Initialise the world
+    // TODO generation phase
+    world = new World(constants::WORLD_DEPTH, constants::WORLD_WIDTH);
+
     return EXIT_SUCCESS;
 }
 
@@ -42,5 +48,5 @@ void GameState::drawText() {
 
 
 void GameState::drawGl() {
-
+    world->Render();
 }

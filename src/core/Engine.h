@@ -11,15 +11,16 @@ class TextRenderer;
 
 
 #include <vector>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "Camera.h"
 
 
 class Engine {
 public:
-    sf::RenderWindow *window;
+    GLFWwindow *window;
 
     TextRenderer *textRenderer;
 

@@ -10,6 +10,7 @@
 
 #include <string>
 #include <core/timing/Timer.h>
+#include <core/world/World.h>
 
 
 class Engine;
@@ -35,6 +36,7 @@ protected:
     std::string runTime;
 private:
     Timer timer;
+    World *world;
 };
 
 

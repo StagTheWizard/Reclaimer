@@ -4,7 +4,10 @@
 
 #include "TextShaderProgram.h"
 
-#include <SFML/OpenGL.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "core/Constants.h"
 
 
 TextShaderProgram::TextShaderProgram() : ShaderProgram() {}
@@ -20,13 +23,30 @@ void TextShaderProgram::initialiseShaders() {
 
 
 void TextShaderProgram::bindUniforms() {
-    uniformInputColor = glGetUniformLocation(program, "inputColor");
-    uniformTextureMap = glGetUniformLocation(program, "textureMap");
+    GLint inputColorLoc = glGetUniformLocation(program, "inputColor");
+    uniformInputColor = (GLuint) inputColorLoc;
+
+    GLint textureMapLoc = glGetUniformLocation(program, "textureMap");
+    uniformTextureMap = (GLuint) textureMapLoc;
+
+    GLint projectionLoc = glGetUniformLocation(program, "projection");
+    uniformProjection = (GLuint) projectionLoc;
+
+    projection = glm::ortho(0.0f, (float) constants::WINDOW_WIDTH, 0.0f, (float) constants::WINDOW_HEIGHT);
 
     uniformsBound = true;
 }
 
 
+void TextShaderProgram::bindLocations() {
+    glBindAttribLocation(program, 0, "pos");
+    glBindAttribLocation(program, 1, "UVin");
+}
+
+
 void TextShaderProgram::updateUniforms(glm::vec3 color) {
+    glUseProgram(program);
     glUniform3fv(uniformInputColor, 1, &color[0]);
+    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform1i(uniformTextureMap, 0);
 }

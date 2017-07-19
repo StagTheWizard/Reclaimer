@@ -15,7 +15,30 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 
-include_directories(src)
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
+
+
+option(GLFW_BUILD_DOCS OFF)
+option(GLFW_BUILD_EXAMPLES OFF)
+option(GLFW_BUILD_TESTS OFF)
+add_subdirectory(deps/glfw)
+
+option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+option(ASSIMP_BUILD_SAMPLES OFF)
+option(ASSIMP_BUILD_TESTS OFF)
+add_subdirectory(deps/assimp)
+
+include_directories(
+        src
+        deps/assimp/include
+        deps/glad/include
+        deps/glfw/include
+        deps/glm
+        deps/freetype/include)
+
+file(GLOB DEPS_SOURCES
+        deps/glad/src/glad.c)
 
 file(GLOB PROJECT_SOURCES
         src/Launcher.cpp
@@ -24,8 +47,23 @@ file(GLOB PROJECT_SOURCES
         src/core/Engine.h
         src/core/Engine.cpp
 
+        src/core/world/World.h
+        src/core/world/World.cpp
+        src/core/world/TerrainMesh.h
+
+        src/core/world/Chunk.h
+        src/core/world/Chunk.cpp
+
+        src/core/world/Tile.h
+        src/core/world/TileTypes.h
+        src/core/world/TileType.h
+
         src/core/TextRenderer.h
         src/core/TextRenderer.cpp
+        src/core/text/FontTextureAtlas.h
+        src/core/text/FontTextureAtlas.cpp
+        src/core/text/FontChar.h
+        src/core/text/FontData.h
 
         src/core/shaders/ShaderProgram.h
         src/core/shaders/ShaderProgram.cpp
@@ -57,6 +95,7 @@ file(GLOB PROJECT_CONFIGS
 
 source_group("src" FILES ${PROJECT_SOURCES})
 source_group("shaders" FILES ${PROJECT_SHADERS})
+source_group("deps" FILES ${DEPS_SOURCES})
 source_group("assets" FILES ${PROJECT_ASSETS})
 
 # Copy all the resources into the bin
@@ -75,37 +114,26 @@ endif()
 
 add_custom_target(data-target ALL DEPENDS ${PROJECT_RESOURCES})
 
-add_executable(Reclaimer
+add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCES}
         ${PROJECT_SHADERS}
         ${PROJECT_ASSETS}
-        ${PROJECT_CONFIGS})
+        ${PROJECT_CONFIGS}
+        ${DEPS_SOURCES})
 
-
-# OpenGL
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-if (OPENGL_FOUND)
-    target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARIES})
-    # or: target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_gl_LIBRARY})
-    target_link_libraries(${EXECUTABLE_NAME} m)  # if you use maths.h
-endif()
+target_link_libraries(${PROJECT_NAME}
+        glfw
+        assimp
+        freetype
+        ${GLFW_LIBRARIES})
 
 # boost::fi lesystem
 #set(Boost_ADDITIONAL_VERSIONS "1.78" "1.78.0" "1.79" "1.79.0")
-find_package(Boost 1.34.0 REQUIRED system filesystem)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    target_link_libraries(${EXECUTABLE_NAME} ${Boost_LIBRARIES})
-endif()
-
-#Find any version 2.X of SFML
-#See the FindSFML.cmake file for additional details and instructions
-find_package(SFML 2 REQUIRED network audio graphics window system)
-if(SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
-endif()
+#find_package(Boost 1.34.0 REQUIRED system filesystem)
+#if(Boost_FOUND)
+#    include_directories(${Boost_INCLUDE_DIRS})
+#    target_link_libraries(${EXECUTABLE_NAME} ${Boost_LIBRARIES})
+#endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 

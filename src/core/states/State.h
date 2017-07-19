@@ -6,6 +6,8 @@
 #define RECLAIMER_STATE_H
 
 
+#include <string>
+
 #include "core/Engine.h"
 
 

@@ -7,7 +7,7 @@
 
 
 #include <string>
-#include <OpenGL/OpenGL.h>
+#include <glad/glad.h>
 
 
 class ShaderProgram {
@@ -19,16 +19,17 @@ public:
 protected:
     GLuint program;
 
-    GLuint vertShader;
-    GLuint tessCtrlShader;
-    GLuint tessEvalShader;
-    GLuint geomShader;
-    GLuint fragShader;
+    GLuint vertShader = 0;
+    GLuint tessCtrlShader = 0;
+    GLuint tessEvalShader = 0;
+    GLuint geomShader = 0;
+    GLuint fragShader = 0;
 
     bool uniformsBound = false;
 
     virtual void initialiseShaders() = 0;
     void assembleProgram();
+    virtual void bindLocations() = 0;
 
     GLuint loadShader(GLenum shaderType, std::string filename);
 

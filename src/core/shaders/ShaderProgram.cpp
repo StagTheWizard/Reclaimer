@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <SFML/OpenGL.hpp>
+
 
 ShaderProgram::ShaderProgram() {}
 
@@ -29,6 +29,9 @@ void ShaderProgram::assembleProgram() {
     if (tessEvalShader) glAttachShader(program, tessEvalShader);
     if (geomShader) glAttachShader(program, geomShader);
     if (fragShader) glAttachShader(program, fragShader);
+
+    // virtual method enforcing child classes to bind their uniforms in prior to linking
+    bindLocations();
     glLinkProgram(program);
 
     // Affirm outcome of linking
@@ -43,7 +46,6 @@ void ShaderProgram::assembleProgram() {
         fprintf(stderr, "Linker failure: %s\n", strInfoLog);
         delete[] strInfoLog;
     }
-    glUseProgram(program);
     std::cout << "Linker success" << std::endl;
 }
 
@@ -66,7 +68,6 @@ GLuint ShaderProgram::loadShader(GLenum shaderType, std::string filename) {
 
     std::string shaderStr = shaderData.str();
     const char *shaderTxt = shaderStr.c_str();
-
     GLuint shader = glCreateShader(shaderType);
     glShaderSource(shader, 1, &shaderTxt, NULL);
 
