@@ -43,7 +43,7 @@ void IntroState::update() {
 
 
 void IntroState::drawText() {
-    engine->textRenderer->render(INTRO_TEXT, Font::DEFAULT, 18, glm::vec2(20, 20));
+    engine->textRenderer->render(INTRO_TEXT, Font::DEFAULT, 14, glm::vec2(20, 20));
     engine->textRenderer->render(this->name, Font::DEFAULT, 14, glm::vec2(20, 40));
     engine->textRenderer->render(this->runTime, Font::DEFAULT, 14, glm::vec2(20, 60));
 }

@@ -71,7 +71,7 @@ void TextRenderer::render(std::string textStr, Font fontEnum, int size,
     glGenTextures(1, &textShader->uniformTextureMap);
     glBindTexture(GL_TEXTURE_2D, textShader->uniformTextureMap);
     glActiveTexture(GL_TEXTURE0);
-    menloAtlas_12pt = new FontTextureAtlas(face, 12);
+    menloAtlas_12pt = new FontTextureAtlas(face, size);
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);
