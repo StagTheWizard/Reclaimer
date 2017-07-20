@@ -21,11 +21,11 @@ public:
     TextShaderProgram();
     ~TextShaderProgram();
 
-    void bindUniforms();
     void updateUniforms(glm::vec3 color);
 protected:
     virtual void initialiseShaders() override;
     virtual void bindLocations() override;
+    virtual void bindUniforms() override;
 private:
 };
 

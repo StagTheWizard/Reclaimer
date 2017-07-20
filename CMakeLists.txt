@@ -58,17 +58,22 @@ file(GLOB PROJECT_SOURCES
         src/core/world/TileTypes.h
         src/core/world/TileType.h
 
-        src/core/TextRenderer.h
-        src/core/TextRenderer.cpp
+        src/core/rendering/WorldRenderer.h
+        src/core/rendering/WorldRenderer.cpp
+        src/core/rendering/TextRenderer.h
+        src/core/rendering/TextRenderer.cpp
+
         src/core/text/FontTextureAtlas.h
         src/core/text/FontTextureAtlas.cpp
         src/core/text/FontChar.h
         src/core/text/FontData.h
 
-        src/core/shaders/ShaderProgram.h
-        src/core/shaders/ShaderProgram.cpp
-        src/core/shaders/TextShaderProgram.cpp
-        src/core/shaders/TextShaderProgram.cpp
+        src/core/rendering/shaders/ShaderProgram.h
+        src/core/rendering/shaders/ShaderProgram.cpp
+        src/core/rendering/shaders/TerrainShaderProgram.h
+        src/core/rendering/shaders/TerrainShaderProgram.cpp
+        src/core/rendering/shaders/TextShaderProgram.cpp
+        src/core/rendering/shaders/TextShaderProgram.cpp
 
         src/core/Camera.h
         src/core/Camera.cpp
@@ -81,9 +86,13 @@ file(GLOB PROJECT_SOURCES
         src/core/states/IntroState.cpp
         src/core/states/GameState.h
         src/core/states/GameState.cpp
+
+        src/extensions/StringExtensions.h
         )
 
 set(PROJECT_SHADERS
+        shaders/Terrain.vert
+        shaders/Terrain.frag
         shaders/Text.vert
         shaders/Text.frag)
 

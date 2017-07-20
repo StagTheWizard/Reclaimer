@@ -8,16 +8,20 @@
 
 #include <vector>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glad/glad.h>
 
 
 struct TerrainMesh {
-    std::vector<glm::vec3> verticies;
-    std::vector<glm::vec2> edges;
+    std::vector<glm::vec3> vertices;
+    std::vector<GLuint> elements;
 
 
     void append(TerrainMesh *other) {
-        this->verticies.reserve(this->verticies.size() + other->verticies.size());
-        this->verticies.insert(this->verticies.end(), other->verticies.begin(), other->verticies.end());
+        this->vertices.reserve(this->vertices.size() + other->vertices.size());
+        this->vertices.insert(this->vertices.end(), other->vertices.begin(), other->vertices.end());
+        this->elements.reserve(this->elements.size() + other->elements.size());
+        this->elements.insert(this->elements.end(), other->elements.begin(), other->elements.end());
     }
 };
 

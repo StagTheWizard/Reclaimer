@@ -6,7 +6,7 @@
 #include <sstream>
 #include "IntroState.h"
 
-#include "core/TextRenderer.h"
+#include "core/rendering/TextRenderer.h"
 #include "GameState.h"
 
 
@@ -36,19 +36,17 @@ void IntroState::handleEvents() {}
 
 void IntroState::update() {
     // After the intro duraction has passed, move onto the game state
-    if (timer.seconds() >= IntroState::INTRO_DURATION)
-        engine->pushState(new GameState(engine));
+    if (timer.seconds() >= IntroState::INTRO_DURATION) {
+        GameState *gameState = new GameState(engine);
+        gameState->initialise();
+        engine->pushState(gameState);
+    }
     this->runTime = timer.str();
 }
 
 
-void IntroState::drawText() {
+void IntroState::draw() {
     engine->textRenderer->render(INTRO_TEXT, Font::DEFAULT, 14, glm::vec2(20, 20));
     engine->textRenderer->render(this->name, Font::DEFAULT, 14, glm::vec2(20, 40));
     engine->textRenderer->render(this->runTime, Font::DEFAULT, 14, glm::vec2(20, 60));
-}
-
-
-void IntroState::drawGl() {
-
 }

@@ -9,11 +9,12 @@
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <math.h>
+#include <glm/mat4x4.hpp>
 
 
 class Camera {
 public:
-    glm::vec3 pos = glm::vec3(0, 0, 0);
+    glm::vec3 pos = glm::vec3(-5, 1, -5);
     glm::vec3 upDir = glm::vec3(0, 1, 0);
     glm::vec3 viewDir = glm::vec3(1, 0, 1);
     glm::vec3 viewPt = pos + viewDir;
@@ -35,12 +36,18 @@ public:
     Camera();
     Camera(glm::vec3 pos, glm::vec3 upDir, glm::vec3 viewDir);
 
-    void move_forward();
-    void move_backwards();
-    void strafe_left();
-    void strafe_right();
-    void move_up();
-    void move_down();
+    glm::mat4 getViewMatrix();
+
+    void keyPressed(int key, int scanCode, int action, int mods);
+    void cursorMoved(int xPos, int yPos);
+    void processInput(GLFWwindow *window);
+
+    void moveForward();
+    void moveBackwards();
+    void strafeLeft();
+    void strafeRight();
+    void moveUp();
+    void moveDown();
 
 protected:
 private:

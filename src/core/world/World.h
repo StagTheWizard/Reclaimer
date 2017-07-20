@@ -18,17 +18,18 @@ class Tile;
 
 class World {
 public:
+    TerrainMesh *terrainMesh = NULL;
+
     World(int depth, int width);
     ~World();
 
-    void Update();
-    void Render();
+    void update();
 
     bool meshOutdated;
-    void UpdateMesh();
+    void updateMesh();
 
-    int Depth();
-    int Width();
+    int getDepth();
+    int getWidth();
     Chunk* getChunk(int x, int z);
     Tile* getTile(int chunkX, int chunkZ, int x, int z);
 protected:
@@ -37,7 +38,6 @@ private:
     int width;
 
     std::vector<std::vector<Chunk*>> chunks;
-    TerrainMesh *terrainMesh;
 };
 
 

@@ -11,8 +11,8 @@
 
 #include "core/text/FontChar.h"
 #include "core/text/FontTextureAtlas.h"
-#include "Engine.h"
-#include "Constants.h"
+#include "core/Engine.h"
+#include "core/Constants.h"
 
 
 TextRenderer::TextRenderer(Engine *engine) {
@@ -33,7 +33,6 @@ int TextRenderer::initialise() {
 int TextRenderer::initialiseShaders() {
     textShader = new TextShaderProgram();
     textShader->initialise();
-    textShader->bindUniforms();
 
     return EXIT_SUCCESS;
 }
@@ -56,6 +55,8 @@ void TextRenderer::render(std::string textStr, Font fontEnum, int size, glm::vec
 
 void TextRenderer::render(std::string textStr, Font fontEnum, int size,
                           glm::vec2 pos, glm::vec4 color) {
+    textShader->activate();
+    textShader->updateUniforms(glm::vec3(color));
 
     // Initialise freetype
     FT_Library library;
@@ -184,14 +185,10 @@ void TextRenderer::render(std::string textStr, Font fontEnum, int size,
 //            glm::vec2(0.521551728, 0.692307711)
 //    };
 
-
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glGenBuffers(1, &vertexBuffer);
     glGenBuffers(1, &uvBuffer);
-
-    textShader->activate();
-    textShader->updateUniforms(glm::vec3(color));
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -199,7 +196,6 @@ void TextRenderer::render(std::string textStr, Font fontEnum, int size,
     // 1st attribute buffer, vertices
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(testVerts), testVerts, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
@@ -208,17 +204,15 @@ void TextRenderer::render(std::string textStr, Font fontEnum, int size,
     // 2nd attribute buffer, UVs
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * UVs.size(), &UVs[0], GL_STATIC_DRAW);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(testUVs), testUVs, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-//    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*) 0);
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    std::cout << "v.size " << vertices.size() << " uv.size " << UVs.size() << std::endl;
-//    glDisable(GL_BLEND);
+
+    glDisable(GL_BLEND);
 
     glUseProgram(0);
     glDisableVertexAttribArray(0);

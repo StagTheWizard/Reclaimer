@@ -22,6 +22,12 @@ void TextShaderProgram::initialiseShaders() {
 }
 
 
+void TextShaderProgram::bindLocations() {
+    glBindAttribLocation(program, 0, "pos");
+    glBindAttribLocation(program, 1, "UVin");
+}
+
+
 void TextShaderProgram::bindUniforms() {
     GLint inputColorLoc = glGetUniformLocation(program, "inputColor");
     uniformInputColor = (GLuint) inputColorLoc;
@@ -35,12 +41,6 @@ void TextShaderProgram::bindUniforms() {
     projection = glm::ortho(0.0f, (float) constants::WINDOW_WIDTH, 0.0f, (float) constants::WINDOW_HEIGHT);
 
     uniformsBound = true;
-}
-
-
-void TextShaderProgram::bindLocations() {
-    glBindAttribLocation(program, 0, "pos");
-    glBindAttribLocation(program, 1, "UVin");
 }
 
 

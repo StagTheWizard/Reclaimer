@@ -22,12 +22,12 @@ public:
     Chunk(World *world, int x, int z);
     ~Chunk();
 
-    Tile * GetTile(int x, int z);
+    Tile * getTile(int x, int z);
 
-    void SetTile(int x, int z, int value);
-    void SetTile(int x, int z, TileType tile);
+    void setTile(int x, int z, int value);
+    void setTile(int x, int z, TileType tile);
 
-    void UpdateMesh();
+    void updateMesh();
 
     TerrainMesh *mesh;
 protected:

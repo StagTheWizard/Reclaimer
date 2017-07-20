@@ -14,18 +14,25 @@ class TextRenderer;
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <core/rendering/WorldRenderer.h>
 
 #include "Camera.h"
+#include "Constants.h"
 
 
 class Engine {
 public:
+    static Engine* Instance();
+
     GLFWwindow *window;
+    float windowHeight = constants::WINDOW_HEIGHT;
+    float windowWidth = constants::WINDOW_WIDTH;
+    float aspectRatio() {
+        return windowWidth / windowHeight;
+    }
 
-    TextRenderer *textRenderer;
-
-    Engine();
-    ~Engine();
+    TextRenderer *textRenderer = NULL;
+    WorldRenderer *worldRenderer = NULL;
 
     bool isRunning() { return running; }
 
@@ -37,13 +44,19 @@ public:
     void changeState(State *state);
     void pushState(State *state);
     void popState();
+    State* peekState();
 
     void handleEvents();
     void update();
     void draw();
     int quit();
 private:
-    Camera *camera;
+    static Engine* instance;
+
+    Engine();
+    ~Engine();
+    Camera *camera = NULL;
+
 
     std::vector<State *> states;
 

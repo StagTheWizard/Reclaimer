@@ -52,6 +52,7 @@ void ShaderProgram::assembleProgram() {
 
 void ShaderProgram::activate() {
 //    std::cout << "[ShaderProgram] Activating." << std::endl;
+    this->bindUniforms();
     if (uniformsBound) glUseProgram(program);
     else std::cerr << "[ShaderProgram] Uniform Variables not bound, failed to activate." << std::endl;
 //    std::cout << "[ShaderProgram] Activation complete." << std::endl;

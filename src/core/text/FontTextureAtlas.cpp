@@ -85,7 +85,7 @@ FontTextureAtlas::FontTextureAtlas(FT_Face face, int h) {
 
 
     }
-    std::cout << "Generated a " << width << "x" << height << " (" << width * height / 1024 << " kb) texture atlas.\n";
+//    std::cout << "Generated a " << width << "x" << height << " (" << width * height / 1024 << " kb) texture atlas.\n";
 }
 
 

@@ -2,23 +2,33 @@
 // Created by montgomery anderson on 6/07/17.
 //
 
-#include <core/TextRenderer.h>
-#include <core/Constants.h>
 #include "GameState.h"
 
+#include <glm/gtc/matrix_transform.hpp>
 
-GameState::GameState(Engine *engine) : State(engine) {}
+#include "core/rendering/TextRenderer.h"
+#include "core/Constants.h"
+#include "extensions/StringExtensions.h"
 
 
-GameState::~GameState() {}
+GameState::GameState(Engine *engine) : State(engine) {
+}
+
+
+GameState::~GameState() {
+    delete camera;
+}
 
 
 int GameState::initialise() {
     timer = Timer::Start();
 
+    camera = new Camera();
+
     // Initialise the world
     // TODO generation phase
     world = new World(constants::WORLD_DEPTH, constants::WORLD_WIDTH);
+    world->updateMesh();
 
     return EXIT_SUCCESS;
 }
@@ -38,15 +48,34 @@ void GameState::handleEvents() {}
 
 void GameState::update() {
     this->runTime = timer.str();
+    this->cameraInfo = "camera info: " +
+       extensions::toString(camera->pos, 2) + ", " +
+       extensions::toString(camera->viewDir, 2) + ", " +
+       extensions::toString(camera->upDir, 2);
+    this->meshInfo = "mesh info: " +
+                     std::to_string(world->terrainMesh->vertices.size()) + " vertices, " +
+                     std::to_string(world->terrainMesh->elements.size()) + " elements";
+
+    camera->processInput(engine->window);
+    world->update();
 }
 
 
-void GameState::drawText() {
+void GameState::draw() {
+    // update matrices
+    glm::mat4 model = glm::mat4(1.0);
+    glm::mat4 view = camera->getViewMatrix();
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), engine->aspectRatio(), 0.1f, 100.0f);
+
+    engine->worldRenderer->modelMatrix = model;
+    engine->worldRenderer->viewMatrix = view;
+    engine->worldRenderer->projectionMatrix = projection;
+    // render terrain
+    engine->worldRenderer->renderTerrain(world->terrainMesh);
+
+    // render state info
     engine->textRenderer->render(this->name, Font::DEFAULT, 14, glm::vec2(20, 40));
     engine->textRenderer->render(this->runTime, Font::DEFAULT, 14, glm::vec2(20, 60));
-}
-
-
-void GameState::drawGl() {
-    world->Render();
+    engine->textRenderer->render(this->meshInfo, Font::DEFAULT, 12, glm::vec2(20, 80));
+    engine->textRenderer->render(this->cameraInfo, Font::DEFAULT, 12, glm::vec2(20, 100));
 }

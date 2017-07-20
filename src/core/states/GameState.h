@@ -28,15 +28,20 @@ public:
     void resume();
 
     void handleEvents();
+//    void keyPressed(GLFWwindow* window, int key, int scanCode, int action, int mods);
+//    void cursorMoved(GLFWwindow* window, int xPos, int yPos);
+
     void update();
-    void drawText();
-    void drawGl();
+    void draw();
 protected:
     std::string name = "GameState";
     std::string runTime;
+    std::string cameraInfo;
+    std::string meshInfo;
 private:
     Timer timer;
     World *world;
+    Camera *camera;
 };
 
 

@@ -13,8 +13,8 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 #include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_GLYPH_H
+#include FT_FREETYPE_H"freetype/freetype.h"
+#include FT_GLYPH_H"freetype/ftglyph.h"
 
 #include "shaders/TextShaderProgram.h"
 

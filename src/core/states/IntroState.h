@@ -12,7 +12,7 @@
 class IntroState : public State {
 public:
     const std::string INTRO_TEXT = "Reclaimer 0.1";
-    const int INTRO_DURATION = 4;
+    const int INTRO_DURATION = 2;
 
     IntroState(Engine *engine);
     ~IntroState();
@@ -24,9 +24,11 @@ public:
     void resume();
 
     void handleEvents();
+//    void keyPressed(GLFWwindow* window, int key, int scanCode, int action, int mods);
+//    void cursorMoved(GLFWwindow* window, int xPos, int yPos);
+
     void update();
-    void drawText();
-    void drawGl();
+    void draw();
 protected:
     std::string name = "IntroState";
     std::string runTime;

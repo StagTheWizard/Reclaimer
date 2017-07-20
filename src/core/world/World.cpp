@@ -30,68 +30,50 @@ World::World(int depth, int width) {
     for (int z = 0; z < depth; z++) {
         this->chunks[z].resize(width);
         for (int x = 0; x < width; x++) {
-            chunks[z][x]->UpdateMesh();
+            chunks[z][x]->updateMesh();
         }
     }
+
+    this->meshOutdated = true;
 }
 
 
 World::~World() {}
 
 
-int World::Depth() {
+int World::getDepth() {
     return this->depth;
 }
 
 
-int World::Width() {
+int World::getWidth() {
     return this->width;
 }
 
 
-void World::Update() {
+void World::update() {
     if (meshOutdated)
-        UpdateMesh();
+        updateMesh();
 }
 
 
-void World::UpdateMesh() {
+void World::updateMesh() {
+    if (terrainMesh)
+        delete terrainMesh;
     terrainMesh = new TerrainMesh();
     for (int z = 0; z < depth; z++) {
         for (int x = 0; x < width; x++) {
             terrainMesh->append(chunks[z][x]->mesh);
         }
     }
-}
-
-
-void World::Render() {
-//    GLuint vbo[2];
-//    glGenBuffers(2, vbo);
-//
-//    // First VBO
-//    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &terrainMesh->verticies[0], GL_STATIC_DRAW);
-//
-//    glEnableVertexAttribArray(0);
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-//
-//    // Second VBO
-//    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2), &terrainMesh->edges[0], GL_STATIC_DRAW);
-//
-//    glEnableVertexAttribArray(1);
-//    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-//    glPatchParameteri(GL_PATCH_VERTICES, 9);
-//    glDrawArrays(GL_PATCHES, 0);
+    meshOutdated = false;
 }
 
 
 Chunk *World::getChunk(int x, int z) {
-    if (x < 0 || x > width)
+    if (x < 0 || x >= width)
         throw std::out_of_range("Attempted to access chunk outside of world width");
-    if (z < 0 || z < depth)
+    if (z < 0 || z >= depth)
         throw std::out_of_range("Attempted to access chunk outside of world depth");
 
     return chunks[z][x];
@@ -100,7 +82,7 @@ Chunk *World::getChunk(int x, int z) {
 
 Tile *World::getTile(int chunkX, int chunkZ, int x, int z) {
     try {
-        return getChunk(chunkX, chunkZ)->GetTile(x, z);
+        return getChunk(chunkX, chunkZ)->getTile(x, z);
     } catch (std::out_of_range) {
         return new Tile(TileTypes::Void.id, x, z, 0);
     }

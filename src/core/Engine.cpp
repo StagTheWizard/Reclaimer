@@ -2,15 +2,41 @@
 // Created by montgomery anderson on 30/06/17.
 //
 
+#include <iostream>
 #include "Engine.h"
 
 #include "states/State.h"
-#include "TextRenderer.h"
+#include "core/rendering/TextRenderer.h"
 #include "Constants.h"
+
+
+/*void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
+    Engine::Instance()->peekState()->keyPressed(
+            window, key, scanCode, action, mods
+    );
+}
+
+
+void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
+    Engine::Instance()->peekState()->cursorMoved(
+            window, xPos, yPos
+    );
+}*/
+
+
+Engine* Engine::instance = NULL;
+
+
+Engine* Engine::Instance() {
+    if (Engine::instance == NULL)
+        Engine::instance = new Engine();
+    return Engine::instance;
+}
 
 
 Engine::Engine() {
     this->textRenderer = new TextRenderer(this);
+    this->worldRenderer = new WorldRenderer(this);
 }
 
 
@@ -40,12 +66,16 @@ int Engine::initialise() {
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
+    // bind callbacks
+//    glfwSetKeyCallback(window, keyCallback);
+//    glfwSetCursorPosCallback(window, cursorCallback);
+
     // swap every screen update
     glfwSwapInterval(1);
 
     // load resources
     textRenderer->initialise();
-    // initialise OpenGL states
+    worldRenderer->initialise();
 
     return EXIT_SUCCESS;
 }
@@ -60,16 +90,21 @@ int Engine::start() {
     glEnable(GL_DEPTH_TEST);
 
     glClearColor(0.3f, 0.3f, 0.35f, 1);
+    try {
+        while (!glfwWindowShouldClose(window)) {
+            // handle events
+            glfwPollEvents();
 
-    while (!glfwWindowShouldClose(window)) {
-        // handle events
-        // TODO adjust viewport on resive event
+            // TODO adjust viewport on resive event
 
-        // update
-        this->update();
+            // update
+            this->update();
 
-        // draw
-        this->draw();
+            // draw
+            this->draw();
+        }
+    } catch (std::exception e) {
+        std::cerr << "Error in main loop - " << e.what() << std::endl;
     }
 
     running = false;
@@ -92,27 +127,30 @@ void Engine::popState() {
 }
 
 
+State *Engine::peekState() {
+    states.back();
+}
+
+
 void Engine::handleEvents() {}
 
 
 void Engine::update() {
     if (states.size() < 1) return;
-    State* currentState = states[states.size() - 1];
+    State* currentState = states.back();
     currentState->update();
 }
 
 
 void Engine::draw() {
-    glfwPollEvents();
     if (states.size() < 1) return;
-    State* currentState = states[states.size() - 1];
+    State* currentState = states.back();
     // push OpenGL state
     // clear the buffers
     glViewport(0, 0, constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // render OpenGL
-    currentState->drawGl();
-    currentState->drawText();
+    currentState->draw();
 
     // end the current frame (internally swaps the buffers)
     glfwSwapBuffers(window);

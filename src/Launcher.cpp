@@ -8,7 +8,7 @@
 int main(int argc, char **argv) {
     std::cout << "Launching " << constants::WINDOW_TITLE << std::endl;
 
-    Engine *engine = new Engine();
+    Engine *engine = Engine::Instance();
     if (engine->initialise()) {
         std::cout << "Engine failed to initialise, closing now." << std::endl;
         return EXIT_FAILURE;

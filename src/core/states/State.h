@@ -15,13 +15,16 @@ class State {
 public:
     virtual int initialise() = 0;
     virtual void cleanup() = 0;
+
     virtual void pause() = 0;
     virtual void resume() = 0;
-    virtual void handleEvents() = 0;
-    virtual void update() = 0;
 
-    virtual void drawText() = 0;
-    virtual void drawGl() = 0;
+    virtual void handleEvents() = 0;
+//    virtual void keyPressed(GLFWwindow* window, int key, int scanCode, int action, int mods) = 0;
+//    virtual void cursorMoved(GLFWwindow* window, int xPos, int yPos) = 0;
+
+    virtual void update() = 0;
+    virtual void draw() = 0;
 
 
     void ChangeState(Engine *engine, State *state) {

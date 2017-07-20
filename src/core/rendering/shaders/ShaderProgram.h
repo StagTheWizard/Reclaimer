@@ -30,6 +30,7 @@ protected:
     virtual void initialiseShaders() = 0;
     void assembleProgram();
     virtual void bindLocations() = 0;
+    virtual void bindUniforms() = 0;
 
     GLuint loadShader(GLenum shaderType, std::string filename);
 

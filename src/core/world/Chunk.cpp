@@ -26,14 +26,14 @@ Chunk::Chunk(World *world, int x, int z) {
 Chunk::~Chunk() {}
 
 
-Tile *Chunk::GetTile(int x, int z) {
+Tile *Chunk::getTile(int x, int z) {
     return &tiles[z][x];
 }
 
 
-void Chunk::SetTile(int x, int z, int typeId) {
+void Chunk::setTile(int x, int z, int typeId) {
     tiles[z][x].typeId = typeId;
-    UpdateMesh();
+    updateMesh();
 }
 
 
@@ -42,12 +42,12 @@ void Chunk::SetTileHeight(int x, int z, int height) {
 }
 
 
-void Chunk::SetTile(int x, int z, TileType tile) {
-    SetTile(z, x, tile.id);
+void Chunk::setTile(int x, int z, TileType tile) {
+    setTile(z, x, tile.id);
 }
 
 
-void Chunk::UpdateMesh() {
+void Chunk::updateMesh() {
     this->mesh = new TerrainMesh();
 
     int cX = posX * constants::CHUNK_SIZE * constants::TILE_SIZE;
@@ -90,24 +90,28 @@ void Chunk::UpdateMesh() {
             else
                 heightWest = tiles[z][x].y;
 
-            glm::vec3 pN = glm::vec3(pX, pZ + halfTile, 0.5 * pHeight + 0.5 * heightNorth);
-            glm::vec3 pE = glm::vec3(pX + halfTile, pZ, 0.5 * pHeight + 0.5 * heightEast);
-            glm::vec3 pS = glm::vec3(pX, pZ - halfTile, 0.5 * pHeight + 0.5 * heightSouth);
-            glm::vec3 pW = glm::vec3(pX - halfTile, pZ, 0.5 * pHeight + 0.5 * heightWest);
+            glm::vec3 pN = glm::vec3(pX + halfTile, 0.5 * pHeight + 0.5 * heightNorth, pZ + halfTile);
+            glm::vec3 pE = glm::vec3(pX + halfTile, 0.5 * pHeight + 0.5 * heightEast, pZ - halfTile);
+            glm::vec3 pS = glm::vec3(pX - halfTile, 0.5 * pHeight + 0.5 * heightSouth, pZ - halfTile);
+            glm::vec3 pW = glm::vec3(pX - halfTile, 0.5 * pHeight + 0.5 * heightWest, pZ + halfTile);
 
-            mesh->verticies.push_back(pN);
-            mesh->verticies.push_back(pE);
-            mesh->verticies.push_back(pS);
-            mesh->verticies.push_back(pW);
+            mesh->vertices.push_back(pN);
+            mesh->vertices.push_back(pW);
+            mesh->vertices.push_back(pS);
+            mesh->vertices.push_back(pS);
+            mesh->vertices.push_back(pE);
+            mesh->vertices.push_back(pN);
 
-            long i_pN = mesh->verticies.size() - 4;
-            long i_pE = mesh->verticies.size() - 3;
-            long i_pS = mesh->verticies.size() - 2;
-            long i_pW = mesh->verticies.size() - 1;
-            mesh->edges.push_back(glm::vec2(i_pN, i_pE));
-            mesh->edges.push_back(glm::vec2(i_pE, i_pS));
-            mesh->edges.push_back(glm::vec2(i_pS, i_pW));
-            mesh->edges.push_back(glm::vec2(i_pW, i_pE));
+//            GLuint i_pN = (GLuint) mesh->vertices.size() - 4;
+//            GLuint i_pW = (GLuint) mesh->vertices.size() - 3;
+//            GLuint i_pS = (GLuint) mesh->vertices.size() - 2;
+//            GLuint i_pE = (GLuint) mesh->vertices.size() - 1;
+//            mesh->elements.push_back(i_pN);
+//            mesh->elements.push_back(i_pW);
+//            mesh->elements.push_back(i_pS);
+//            mesh->elements.push_back(i_pN);
+//            mesh->elements.push_back(i_pS);
+//            mesh->elements.push_back(i_pE);
         }
     }
 }
