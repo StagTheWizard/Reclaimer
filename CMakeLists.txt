@@ -11,6 +11,19 @@ if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build)
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build)
 endif()
 
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build/assets)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/assets)
+endif()
+
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build/shaders)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/shaders)
+endif()
+
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/build/saves)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/saves)
+endif()
+
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -136,13 +149,13 @@ target_link_libraries(${PROJECT_NAME}
         freetype
         ${GLFW_LIBRARIES})
 
-# boost::fi lesystem
-#set(Boost_ADDITIONAL_VERSIONS "1.78" "1.78.0" "1.79" "1.79.0")
-#find_package(Boost 1.34.0 REQUIRED system filesystem)
-#if(Boost_FOUND)
-#    include_directories(${Boost_INCLUDE_DIRS})
-#    target_link_libraries(${EXECUTABLE_NAME} ${Boost_LIBRARIES})
-#endif()
+# boost::filesystem
+set(Boost_ADDITIONAL_VERSIONS "1.78" "1.78.0" "1.79" "1.79.0")
+find_package(Boost 1.34.0 REQUIRED system filesystem serialization)
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    target_link_libraries(${EXECUTABLE_NAME} ${Boost_LIBRARIES})
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 

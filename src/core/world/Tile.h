@@ -24,7 +24,17 @@ struct Tile {
         y = other.y;
         return true;
     }
+
+
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version) {
+        ar & typeId;
+        ar & x;
+        ar & y;
+        ar & z;
+    }
 };
 
+BOOST_CLASS_VERSION(Tile, 0)
 
 #endif //RECLAIMER_TILE_H

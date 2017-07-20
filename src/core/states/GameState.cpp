@@ -66,12 +66,11 @@ void GameState::update() {
 
     this->runTime = timer.str();
     this->cameraInfo = "camera info: " +
-       extensions::toString(camera->pos, 2) + ", " +
-       extensions::toString(camera->viewDir, 2) + ", " +
-       extensions::toString(camera->upDir, 2);
+        extensions::toString(camera->pos, 2) + ", " +
+        extensions::toString(camera->viewDir, 2) + ", " +
+        extensions::toString(camera->upDir, 2);
     this->meshInfo = "mesh info: " +
-                     std::to_string(world->terrainMesh->vertices.size()) + " vertices, " +
-                     std::to_string(world->terrainMesh->elements.size()) + " elements";
+        extensions::toString(world->chunkVerticesCount(), 0) + " vertices";
 
 }
 
@@ -89,7 +88,8 @@ void GameState::draw() {
     for (int z = 0; z < world->getDepth(); z++) {
         for (int x = 0; x < world->getWidth(); x++) {
             Chunk* chunk = world->getChunk(x, z);
-            engine->worldRenderer->renderTerrain(chunk->mesh);
+            if (chunk != NULL)
+                engine->worldRenderer->renderTerrain(chunk->mesh);
         }
     }
 

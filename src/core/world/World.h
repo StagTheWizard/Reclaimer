@@ -8,6 +8,8 @@
 
 #include <vector>
 #include <glm/vec2.hpp>
+#include <string>
+
 #include "TerrainMesh.h"
 
 
@@ -18,6 +20,10 @@ class Tile;
 
 class World {
 public:
+    std::string name = "world 1";
+    std::string saveFolder = "saves/" + name + "/";
+    std::string chunkFolder = saveFolder + "chunks/";
+
     TerrainMesh *terrainMesh = NULL;
 
     World(int depth, int width);
@@ -30,14 +36,24 @@ public:
 
     int getDepth();
     int getWidth();
+
     Chunk* getChunk(int x, int z);
+    void saveChunk(int x, int z);
+    void saveChunk(Chunk* chunk);
+    bool loadChunk(int x, int z);
+    double chunkVerticesCount();
+
     Tile* getTile(int chunkX, int chunkZ, int x, int z);
+
 protected:
 private:
     int depth;
     int width;
 
     std::vector<std::vector<Chunk*>> chunks;
+
+    std::string getChunkFileName(int x, int z);
+    bool chunkHasSaveData(int x, int z);
 };
 
 

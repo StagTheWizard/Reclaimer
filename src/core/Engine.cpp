@@ -88,21 +88,17 @@ int Engine::start() {
     running = true;
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    try {
-        while (!glfwWindowShouldClose(window) && running) {
-            // handle events
-            glfwPollEvents();
+    while (!glfwWindowShouldClose(window) && running) {
+        // handle events
+        glfwPollEvents();
 
-            // TODO adjust viewport on resive event
+        // TODO adjust viewport on resive event
 
-            // update
-            this->update();
+        // update
+        this->update();
 
-            // draw
-            this->draw();
-        }
-    } catch (std::exception e) {
-        std::cerr << "Error in main loop - " << e.what() << std::endl;
+        // draw
+        this->draw();
     }
 
     // exit

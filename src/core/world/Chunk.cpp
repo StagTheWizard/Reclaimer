@@ -9,6 +9,9 @@
 #include "TerrainMesh.h"
 
 
+Chunk::Chunk() {}
+
+
 Chunk::Chunk(World *world, int x, int z) {
     this->world = world;
     this->posX = x;
@@ -17,13 +20,15 @@ Chunk::Chunk(World *world, int x, int z) {
     // Populate the tile array with dirt by default
     for (int x = 0; x < constants::CHUNK_SIZE; x++) {
         for (int z = 0; z < constants::CHUNK_SIZE; z++) {
-            this->tiles[z][x] = Tile { TileTypes::Dirt.id, x, z, 0 };
+            this->tiles[z][x] = Tile {TileTypes::Dirt.id, x, z, 0};
         }
     }
 }
 
 
-Chunk::~Chunk() {}
+Chunk::~Chunk() {
+    delete mesh;
+}
 
 
 Tile *Chunk::getTile(int x, int z) {
@@ -52,7 +57,6 @@ void Chunk::updateMesh() {
 
     int cX = posX * constants::CHUNK_SIZE * constants::TILE_SIZE;
     int cZ = posZ * constants::CHUNK_SIZE * constants::TILE_SIZE;
-
     float halfTile = (float) (0.5 * constants::TILE_SIZE);
 
     for (int x = 0; x < constants::CHUNK_SIZE; x++) {
@@ -61,7 +65,6 @@ void Chunk::updateMesh() {
         for (int z = 0; z < constants::CHUNK_SIZE; z++) {
             int pZ = cZ + z * constants::TILE_SIZE;
             int pHeight = tiles[z][x].y;
-
             int heightNorth;
             // if we are on the northern border
             if (z == constants::CHUNK_SIZE - 1)

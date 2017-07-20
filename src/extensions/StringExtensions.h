@@ -15,8 +15,23 @@ using namespace std;
 namespace extensions {
 
 
+    string toString(double d, int decimalPlaces) {
+        string dStr = to_string(d);
+        if (decimalPlaces == 0)
+            return dStr.substr(0, dStr.find('.'));
+        return dStr.substr(0, dStr.find('.') + 1 + decimalPlaces);
+    }
+
+
+    string toString(double d) {
+        return toString(d, 4);
+    }
+
+
     string toString(float f, int decimalPlaces) {
         string fStr = to_string(f);
+        if (decimalPlaces == 0)
+            return fStr.substr(0, fStr.find('.'));
         return fStr.substr(0, fStr.find('.') + 1 + decimalPlaces);
     }
 
