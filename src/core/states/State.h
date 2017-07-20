@@ -21,7 +21,8 @@ public:
 
     virtual void handleEvents() = 0;
 //    virtual void keyPressed(GLFWwindow* window, int key, int scanCode, int action, int mods) = 0;
-//    virtual void cursorMoved(GLFWwindow* window, int xPos, int yPos) = 0;
+    virtual void cursorMoved(GLFWwindow* window, double xPos, double yPos) = 0;
+    virtual void processInput() = 0;
 
     virtual void update() = 0;
     virtual void draw() = 0;

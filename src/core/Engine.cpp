@@ -14,14 +14,14 @@
     Engine::Instance()->peekState()->keyPressed(
             window, key, scanCode, action, mods
     );
-}
+}*/
 
 
 void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
-    Engine::Instance()->peekState()->cursorMoved(
-            window, xPos, yPos
-    );
-}*/
+    State *state = Engine::Instance()->peekState();
+    if (state != NULL)
+        state->cursorMoved(window, xPos, yPos);
+}
 
 
 Engine* Engine::instance = NULL;
@@ -68,7 +68,7 @@ int Engine::initialise() {
 
     // bind callbacks
 //    glfwSetKeyCallback(window, keyCallback);
-//    glfwSetCursorPosCallback(window, cursorCallback);
+    glfwSetCursorPosCallback(window, cursorCallback);
 
     // swap every screen update
     glfwSwapInterval(1);
@@ -87,11 +87,9 @@ void Engine::cleanup() {}
 int Engine::start() {
     running = true;
 
-    glEnable(GL_DEPTH_TEST);
-
-    glClearColor(0.3f, 0.3f, 0.35f, 1);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     try {
-        while (!glfwWindowShouldClose(window)) {
+        while (!glfwWindowShouldClose(window) && running) {
             // handle events
             glfwPollEvents();
 
@@ -107,10 +105,13 @@ int Engine::start() {
         std::cerr << "Error in main loop - " << e.what() << std::endl;
     }
 
-    running = false;
-
     // exit
     return this->quit();
+}
+
+
+int Engine::stop() {
+    running = false;
 }
 
 
@@ -128,7 +129,9 @@ void Engine::popState() {
 
 
 State *Engine::peekState() {
-    states.back();
+    if (states.size() < 1)
+        return NULL;
+    return states[states.size() - 1];
 }
 
 
@@ -137,16 +140,18 @@ void Engine::handleEvents() {}
 
 void Engine::update() {
     if (states.size() < 1) return;
-    State* currentState = states.back();
+    State* currentState = states[states.size() - 1];
     currentState->update();
 }
 
 
 void Engine::draw() {
     if (states.size() < 1) return;
-    State* currentState = states.back();
+    State* currentState = states[states.size() - 1];
     // push OpenGL state
     // clear the buffers
+    glClearColor(0.3f, 0.3f, 0.35f, 1);
+
     glViewport(0, 0, constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // render OpenGL
@@ -158,6 +163,7 @@ void Engine::draw() {
 
 
 int Engine::quit() {
+    running = false;
     // release resources
     glfwDestroyWindow(window);
     glfwTerminate();

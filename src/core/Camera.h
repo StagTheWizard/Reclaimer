@@ -10,18 +10,19 @@
 #include <glm/vec2.hpp>
 #include <math.h>
 #include <glm/mat4x4.hpp>
+#include "Constants.h"
 
 
 class Camera {
 public:
     glm::vec3 pos = glm::vec3(-5, 1, -5);
     glm::vec3 upDir = glm::vec3(0, 1, 0);
-    glm::vec3 viewDir = glm::vec3(1, 0, 1);
+    glm::vec3 viewDir = glm::vec3(1, 0, 0);
     glm::vec3 viewPt = pos + viewDir;
     glm::vec3 rot = glm::vec3(0, 0, 0);
 
-    float horizontalAngle = (float) M_PI;
-    float verticalAngle = 0;
+    float pitch;
+    float yaw;
     float initialFOV = 45;
 
     const float DIRECTIONAL_SPEED = 0.3f;
@@ -38,8 +39,8 @@ public:
 
     glm::mat4 getViewMatrix();
 
-    void keyPressed(int key, int scanCode, int action, int mods);
-    void cursorMoved(int xPos, int yPos);
+//    void keyPressed(int key, int scanCode, int action, int mods);
+    void cursorMoved(double xPos, double yPos);
     void processInput(GLFWwindow *window);
 
     void moveForward();
@@ -52,6 +53,10 @@ public:
 protected:
 private:
     glm::vec2 screenDimensions;
+
+    bool firstInput = true;
+    double lastX = constants::WINDOW_HEIGHT / 2;
+    double lastY = constants::WINDOW_WIDTH / 2;
 };
 
 

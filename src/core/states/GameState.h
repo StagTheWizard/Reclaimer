@@ -29,7 +29,8 @@ public:
 
     void handleEvents();
 //    void keyPressed(GLFWwindow* window, int key, int scanCode, int action, int mods);
-//    void cursorMoved(GLFWwindow* window, int xPos, int yPos);
+    void cursorMoved(GLFWwindow* window, double xPos, double yPos);
+    void processInput();
 
     void update();
     void draw();

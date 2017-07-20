@@ -34,7 +34,20 @@ void IntroState::resume() {}
 void IntroState::handleEvents() {}
 
 
+void IntroState::processInput() {
+    if (glfwGetKey(engine->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        engine->stop();
+}
+
+
+void IntroState::cursorMoved(GLFWwindow *window, double xPos, double yPos) {
+
+}
+
+
 void IntroState::update() {
+    this->processInput();
+
     // After the intro duraction has passed, move onto the game state
     if (timer.seconds() >= IntroState::INTRO_DURATION) {
         GameState *gameState = new GameState(engine);

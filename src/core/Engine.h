@@ -49,6 +49,8 @@ public:
     void handleEvents();
     void update();
     void draw();
+
+    int stop();
     int quit();
 private:
     static Engine* instance;

@@ -40,6 +40,38 @@ void Camera::processInput(GLFWwindow *window) {
 }
 
 
+void Camera::cursorMoved(double xPos, double yPos) {
+    if (firstInput) {
+        lastX = xPos;
+        lastY = yPos;
+        firstInput = false;
+    }
+
+    float deltaX = (float) (xPos - lastX);
+    float deltaY = (float) (lastY - yPos); // y-coords go from bottom to top (reversed)
+
+    lastX = xPos;
+    lastY = yPos;
+
+    deltaX *= yawSensitivity;
+    deltaY *= pitchSensitivity;
+
+    yaw += deltaX;
+    pitch += deltaY;
+
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    viewDir = glm::normalize(glm::vec3(
+        cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+        sin(glm::radians(pitch)),
+        sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+    ));
+}
+
+
 void Camera::moveForward() {
     pos += viewDir * DIRECTIONAL_SPEED;
 }

@@ -46,7 +46,23 @@ void GameState::resume() {}
 void GameState::handleEvents() {}
 
 
+void GameState::processInput() {
+    if (glfwGetKey(engine->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        engine->stop();
+}
+
+
+void GameState::cursorMoved(GLFWwindow *window, double xPos, double yPos){
+    camera->cursorMoved(xPos, yPos);
+}
+
+
 void GameState::update() {
+    this->processInput();
+    camera->processInput(engine->window);
+
+    world->update();
+
     this->runTime = timer.str();
     this->cameraInfo = "camera info: " +
        extensions::toString(camera->pos, 2) + ", " +
@@ -56,8 +72,6 @@ void GameState::update() {
                      std::to_string(world->terrainMesh->vertices.size()) + " vertices, " +
                      std::to_string(world->terrainMesh->elements.size()) + " elements";
 
-    camera->processInput(engine->window);
-    world->update();
 }
 
 
