@@ -5,6 +5,7 @@
 #include "GameState.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <core/world/Chunk.h>
 
 #include "core/rendering/TextRenderer.h"
 #include "core/Constants.h"
@@ -85,7 +86,12 @@ void GameState::draw() {
     engine->worldRenderer->viewMatrix = view;
     engine->worldRenderer->projectionMatrix = projection;
     // render terrain
-    engine->worldRenderer->renderTerrain(world->terrainMesh);
+    for (int z = 0; z < world->getDepth(); z++) {
+        for (int x = 0; x < world->getWidth(); x++) {
+            Chunk* chunk = world->getChunk(x, z);
+            engine->worldRenderer->renderTerrain(chunk->mesh);
+        }
+    }
 
     // render state info
     engine->textRenderer->render(this->name, Font::DEFAULT, 14, glm::vec2(20, 40));
