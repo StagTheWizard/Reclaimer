@@ -11,6 +11,8 @@
 #include <string>
 
 #include "TerrainMesh.h"
+#include "extensions/fastnoise/FastNoise.h"
+#include "core/world/FilterMapConfig.h"
 
 
 class Chunk;
@@ -24,9 +26,13 @@ public:
     std::string saveFolder = "saves/" + name + "/";
     std::string chunkFolder = saveFolder + "chunks/";
 
+    int masterSeed;
+    FilterMapConfig layer0 = FilterMapConfig();
+    FastNoise *noiseGenerator = NULL;
+
     TerrainMesh *terrainMesh = NULL;
 
-    World(int depth, int width);
+    World(int depth, int width, int seed = rand());
     ~World();
 
     void update();

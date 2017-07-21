@@ -10,11 +10,11 @@ struct Tile {
     int typeId;
     int x;
     int z;
-    int y;
+    float y;
 
-    Tile() : typeId(0), x(0), z(0), y(0) {}
+    Tile() : typeId(0), x(0), z(0), y(0.0) {}
 
-    Tile(int typeId, int x, int z, int y)
+    Tile(int typeId, int x, int z, float y)
             : typeId(typeId), x(x), z(z), y(y) {}
 
     bool operator=(Tile other) {

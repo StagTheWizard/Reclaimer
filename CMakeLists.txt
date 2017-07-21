@@ -62,6 +62,7 @@ file(GLOB PROJECT_SOURCES
 
         src/core/world/World.h
         src/core/world/World.cpp
+        src/core/world/FilterMapConfig.h
         src/core/world/TerrainMesh.h
 
         src/core/world/Chunk.h
@@ -101,6 +102,8 @@ file(GLOB PROJECT_SOURCES
         src/core/states/GameState.cpp
 
         src/extensions/StringExtensions.h
+        src/extensions/fastnoise/FastNoise.h
+        src/extensions/fastnoise/FastNoise.cpp
         )
 
 set(PROJECT_SHADERS

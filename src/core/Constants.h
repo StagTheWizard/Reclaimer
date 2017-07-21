@@ -16,9 +16,10 @@ namespace constants {
     const std::string WINDOW_TITLE = "Reclaimer " + VERSION;
 
 
-    const int WORLD_WIDTH = 2;
-    const int WORLD_DEPTH = 2;
-    const int CHUNK_SIZE = 64;
+    const int WORLD_WIDTH = 4;
+    const int WORLD_DEPTH = 4;
+    const int WORLD_HEIGHT = 16;
+    const int CHUNK_SIZE = 32;
     const int TILE_SIZE = 1;
 }
 

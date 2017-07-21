@@ -45,7 +45,7 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
 //    glGenBuffers(1, &elementBuffer);
 
     glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glm::vec3 testVertices[] = {
@@ -77,7 +77,7 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
 //    glDrawElements(GL_PATCHES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
 
     glDisable(GL_DEPTH_TEST);
-//    glDisable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glUseProgram(0);

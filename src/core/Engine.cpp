@@ -108,6 +108,7 @@ int Engine::start() {
 
 int Engine::stop() {
     running = false;
+    return EXIT_SUCCESS;
 }
 
 

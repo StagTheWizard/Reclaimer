@@ -30,13 +30,14 @@ public:
     World *world;
     TerrainMesh *mesh;
 
-    Chunk(World *world, int x, int z);
+    Chunk(World *world, int posX, int posZ);
     ~Chunk();
 
     Tile *getTile(int x, int z);
     void setTile(int x, int z, int value);
     void setTile(int x, int z, TileType tile);
 
+    bool isModified();
     void updateMesh();
 
     template<class Archive>
@@ -45,10 +46,12 @@ public:
     }
 protected:
 private:
+    bool modified = false;
+
     Tile tiles[constants::CHUNK_SIZE][constants::CHUNK_SIZE];
     Chunk();
 
-    void SetTileHeight(int x, int z, int height);
+    void setTileHeight(int x, int z, int height);
 };
 
 BOOST_CLASS_VERSION(Chunk, 0)

@@ -16,11 +16,29 @@
 #include "Tile.h"
 
 
-World::World(int depth, int width) {
+World::World(int depth, int width, int seed) {
     this->depth = depth;
     this->width = width;
-    // Generate the chunk map of set size
-    this->chunks.resize(depth);
+    this->masterSeed = seed;
+
+    this->noiseGenerator = new FastNoise();
+
+    layer0.seed = masterSeed;
+    this->noiseGenerator->SetSeed(layer0.seed);
+    this->noiseGenerator->SetFrequency(layer0.frequency);
+    this->noiseGenerator->SetInterp(layer0.interp);
+    this->noiseGenerator->SetNoiseType(layer0.type);
+    this->noiseGenerator->SetFractalOctaves(layer0.fractalOctaves);
+    this->noiseGenerator->SetFractalLacunarity(layer0.fractalLacunarity);
+    this->noiseGenerator->SetFractalGain(layer0.fractalGain);
+    this->noiseGenerator->SetFractalType(layer0.fractalType);
+    this->noiseGenerator->SetCellularDistanceFunction(layer0.cellularDistanceFunction);
+    this->noiseGenerator->SetCellularReturnType(layer0.cellularReturnType);
+    this->noiseGenerator->SetCellularNoiseLookup(this->noiseGenerator);
+    this->noiseGenerator->SetCellularDistance2Indices(layer0.cellularDistanceIndex0, layer0.cellularDistanceIndex1);
+    this->noiseGenerator->SetCellularJitter(layer0.cellularJitter);
+    this->noiseGenerator->SetGradientPerturbAmp(layer0.gradientPerturbAmp);
+
 
     if (!boost::filesystem::exists(saveFolder))
         boost::filesystem::create_directory(saveFolder);
@@ -28,7 +46,8 @@ World::World(int depth, int width) {
     if (!boost::filesystem::exists(chunkFolder))
         boost::filesystem::create_directory(chunkFolder);
 
-
+    // Generate the chunk map of set size
+    this->chunks.resize(depth);
     // Initialise the chunks
     for (int z = 0; z < depth; z++) {
         this->chunks[z].resize(width);
@@ -89,11 +108,11 @@ Tile *World::getTile(int chunkX, int chunkZ, int x, int z) {
     try {
         Chunk *chunk = getChunk(chunkX, chunkZ);
         if (chunk == NULL)
-            return new Tile(TileTypes::Void.id, x, z, 0);
+            return new Tile(TileTypes::Void.id, x, z, 0.0);
         else
             return chunk->getTile(x, z);
     } catch (std::out_of_range) {
-        return new Tile(TileTypes::Void.id, x, z, 0);
+        return new Tile(TileTypes::Void.id, x, z, 0.0);
     }
 }
 
