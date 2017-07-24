@@ -48,15 +48,6 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
     glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    glm::vec3 testVertices[] = {
-            glm::vec3(0.0, 0.0, 10.0),
-            glm::vec3(0.0, 0.0, 0.0),
-            glm::vec3(10.0, 0.0, 0.0),
-            glm::vec3(0.0, 0.0, 10.0),
-            glm::vec3(0.0, 0.0, 10.0),
-            glm::vec3(10.0, 0.0, 10.0)
-    };
-
     // First VBO
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->vertices.size(), &mesh->vertices[0], GL_STATIC_DRAW);

@@ -79,7 +79,7 @@ void GameState::draw() {
     // update matrices
     glm::mat4 model = glm::mat4(1.0);
     glm::mat4 view = camera->getViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), engine->aspectRatio(), 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), engine->aspectRatio(), 0.1f, 1000.0f);
 
     engine->worldRenderer->modelMatrix = model;
     engine->worldRenderer->viewMatrix = view;
