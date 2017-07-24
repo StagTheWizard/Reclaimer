@@ -42,7 +42,7 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glGenBuffers(1, &vertexBuffer);
-//    glGenBuffers(1, &elementBuffer);
+    glGenBuffers(1, &elementBuffer);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -57,15 +57,15 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Index buffer
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->elements.size(), &mesh->elements[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->elements.size(), &mesh->elements[0], GL_STATIC_DRAW);
 
 
     glBindVertexArray(vao);
-//    glPatchParameteri(GL_PATCH_VERTICES, 4);
-    glDrawArrays(GL_TRIANGLES, 0, mesh->vertices.size());
+//    glPatchParameteri(GL_PATCH_VERTICES, 3);
+//    glDrawArrays(GL_TRIANGLES, 0, mesh->vertices.size());
 //    glDrawArrays(GL_TRIANGLES, 0, 6);
-//    glDrawElements(GL_PATCHES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);

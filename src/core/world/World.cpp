@@ -104,6 +104,17 @@ Chunk *World::getChunk(int x, int z) {
 }
 
 
+Chunk *World::tryGetChunk(int x, int z) {
+    Chunk* chunk = NULL;
+    try {
+        chunk = getChunk(x, z);
+    } catch (std::out_of_range e) {
+        chunk = NULL;
+    }
+    return chunk;
+}
+
+
 Tile *World::getTile(int chunkX, int chunkZ, int x, int z) {
     try {
         Chunk *chunk = getChunk(chunkX, chunkZ);

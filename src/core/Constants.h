@@ -18,7 +18,7 @@ namespace constants {
 
     const int WORLD_WIDTH = 8;
     const int WORLD_DEPTH = 8;
-    const int WORLD_HEIGHT = 32;
+    const int WORLD_HEIGHT = 8;
     const int CHUNK_SIZE = 32;
     const int TILE_SIZE = 1;
 }

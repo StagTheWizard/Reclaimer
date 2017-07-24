@@ -44,6 +44,7 @@ public:
     int getWidth();
 
     Chunk* getChunk(int x, int z);
+    Chunk* tryGetChunk(int x, int z);
     void saveChunk(int x, int z);
     void saveChunk(Chunk* chunk);
     bool loadChunk(int x, int z);

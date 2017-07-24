@@ -70,118 +70,114 @@ void Chunk::updateMesh() {
     int cX = posX * constants::CHUNK_SIZE * constants::TILE_SIZE;
     int cZ = posZ * constants::CHUNK_SIZE * constants::TILE_SIZE;
 
+    unsigned int i = 0;
     for (int x = 0; x < constants::CHUNK_SIZE; x++) {
-        int pX = cX + x * constants::TILE_SIZE;
+        float pX = cX + x * constants::TILE_SIZE;
 
         for (int z = 0; z < constants::CHUNK_SIZE; z++) {
-            int pZ = cZ + z * constants::TILE_SIZE;
-            float pHeight = tiles[z][x].y;
-            float heightNorth;
-            float heightEast;
-            float heightSouth;
-            float heightWest;
-            bool northWestEdge = z == constants::CHUNK_SIZE - 1;
-            bool southEastEdge = z == 0;
-            bool northEastEdge = x == constants::CHUNK_SIZE - 1;
-            bool southWestEdge = x == 0;
+            float pZ = cZ + z * constants::TILE_SIZE;
+            float y = tiles[z][x].y;
+            glm::vec3 p = glm::vec3(pX, y, pZ);
+            mesh->vertices.push_back(p);
+            if (x != 0 && z != 0) {
+                // Generate triangle elements using indices of E, S & W points
+                unsigned int iWest = i - constants::CHUNK_SIZE;
+                unsigned int iSouth = i - constants::CHUNK_SIZE - 1;
+                unsigned int iEast = i - 1;
 
-            float hN, hE, hS, hW, hNE, hSE, hNW, hSW;
+                mesh->elements.push_back(i);
+                mesh->elements.push_back(iSouth);
+                mesh->elements.push_back(iWest);
 
-            // height NW
-            if (northWestEdge) hNW = world->getTile(posX, posZ + 1, x, 0)->y;
-            else hNW = tiles[z + 1][x].y;
-            // height NE
-            if (northEastEdge) hNE = world->getTile(posX + 1, posZ, 0, z)->y;
-            else hNE = tiles[z][x + 1].y;
-            // height SE
-            if (southEastEdge) hSE = world->getTile(posX, posZ - 1, x, constants::CHUNK_SIZE - 1)->y;
-            else hSE = tiles[z - 1][x].y;
-            // height SW
-            if (southWestEdge) hSW = world->getTile(posX - 1, posZ, constants::CHUNK_SIZE - 1, z)->y;
-            else hSW = tiles[z][x - 1].y;
-
-
-
-            // height N
-            if (northWestEdge) { // posZ + 1
-                if (northEastEdge) // posX + 1
-                    hN = world->getTile(posX + 1, posZ + 1, 0, 0)->y;
-                else // posX
-                    hN = world->getTile(posX, posZ + 1, x + 1, 0)->y;
-            } else {// posZ
-                if (northEastEdge) // posX + 1
-                    hN = world->getTile(posX + 1, posZ, 0, z + 1)->y;
-                else // posX / inside this chunk
-                    hN = tiles[z + 1][x + 1].y;
-            }
-            // height E
-            if (northEastEdge) { // posX + 1
-                if (southEastEdge) // posZ - 1
-                    hE = world->getTile(posX + 1, posZ - 1, 0, constants::CHUNK_SIZE - 1)->y;
-                else // posZ
-                    hE = world->getTile(posX + 1, posZ, 0, z - 1)->y;
-            } else { // posX + 1
-                if (southEastEdge) // posZ - 1
-                    hE = world->getTile(posX, posZ - 1, x + 1, constants::CHUNK_SIZE - 1)->y;
-                else // poxZ / inside this chunk
-                    hE = tiles[z - 1][x + 1].y;
-            }
-            // height S
-            if (southWestEdge) { // posX - 1
-                if (southEastEdge) // posZ - 1
-                    hS = world->getTile(posX - 1, posZ - 1, constants::CHUNK_SIZE - 1,
-                                                 constants::CHUNK_SIZE - 1)->y;
-                else // posZ
-                    hS = world->getTile(posX - 1, posZ, constants::CHUNK_SIZE - 1, z - 1)->y;
-            } else { // posX
-                if (southEastEdge) // posZ - 1
-                    hS = world->getTile(posX, posZ - 1, x - 1, constants::CHUNK_SIZE - 1)->y;
-                else // posZ / inside this chunk
-                    hS = tiles[z - 1][x - 1].y;
-            }
-            // height W
-            if (northWestEdge) { // posZ + 1
-                if (southWestEdge) // posX - 1
-                    hW = world->getTile(posX - 1, posZ + 1, constants::CHUNK_SIZE - 1, 0)->y;
-                else // posX
-                    hW = world->getTile(posX, posZ + 1, x - 1, 0)->y;
-            } else { // posZ
-                if (southWestEdge) // posX - 1
-                    hW = world->getTile(posX - 1, posZ, constants::CHUNK_SIZE - 1, z + 1)->y;
-                else // posX / inside this chunk
-                    hW = tiles[z + 1][x - 1].y;
+                mesh->elements.push_back(i);
+                mesh->elements.push_back(iEast);
+                mesh->elements.push_back(iSouth);
             }
 
-            glm::vec3 pN = glm::vec3(pX + constants::TILE_SIZE,
-                                     (pHeight + hN + hNE + hNW) / 4,
-                                     pZ + constants::TILE_SIZE);
-            glm::vec3 pE = glm::vec3(pX + constants::TILE_SIZE,
-                                     (pHeight + hE + hNE + hSE) / 4,
-                                     pZ);
-            glm::vec3 pS = glm::vec3(pX,
-                                     (pHeight + hS + hSE + hSW) / 4,
-                                     pZ);
-            glm::vec3 pW = glm::vec3(pX,
-                                     (pHeight + hW + hNW + hSW) / 4,
-                                     pZ + constants::TILE_SIZE);
-
-            mesh->vertices.push_back(pN);
-            mesh->vertices.push_back(pS);
-            mesh->vertices.push_back(pW);
-            mesh->vertices.push_back(pS);
-            mesh->vertices.push_back(pN);
-            mesh->vertices.push_back(pE);
-
-//            GLuint i_pN = (GLuint) mesh->vertices.size() - 4;
-//            GLuint i_pW = (GLuint) mesh->vertices.size() - 3;
-//            GLuint i_pS = (GLuint) mesh->vertices.size() - 2;
-//            GLuint i_pE = (GLuint) mesh->vertices.size() - 1;
-//            mesh->elements.push_back(i_pN);
-//            mesh->elements.push_back(i_pW);
-//            mesh->elements.push_back(i_pS);
-//            mesh->elements.push_back(i_pN);
-//            mesh->elements.push_back(i_pS);
-//            mesh->elements.push_back(i_pE);
+            i++;
         }
     }
+    unsigned int iLastInsideVert = i - 1;
+
+    // Create one more strip to join with NW, N, NE chunks (if not null)
+    // Firstly create the NW strip (if NW chunk exists / loaded)
+    Chunk* chunkNW = world->tryGetChunk(posX + 1, posZ);
+    if (chunkNW != NULL) {
+        float pX = cX + constants::CHUNK_SIZE;
+        int x = constants::CHUNK_SIZE - 1;
+        for (int z = 0; z < constants::CHUNK_SIZE; z++) {
+            float pZ = cZ + z * constants::TILE_SIZE;
+            glm::vec3 p = glm::vec3(pX, chunkNW->getTile(0, z)->y, pZ);
+            mesh->vertices.push_back(p);
+
+            if (z != 0) {
+                // Generate triangle elements using indices of E, S & W points
+                unsigned int iWest = i - 1;
+                unsigned int iEast = x * constants::CHUNK_SIZE + z;
+                unsigned int iSouth = x * constants::CHUNK_SIZE + (z - 1);
+
+                mesh->elements.push_back(i);
+                mesh->elements.push_back(iWest);
+                mesh->elements.push_back(iSouth);
+
+                mesh->elements.push_back(i);
+                mesh->elements.push_back(iSouth);
+                mesh->elements.push_back(iEast);
+            }
+
+            i++;
+        }
+    }
+    unsigned int iLastNW = i - 1;
+    // Then create the NE strip (if NE chunk exists / loaded)
+    Chunk* chunkNE = world->tryGetChunk(posX, posZ + 1);
+    if (chunkNE != NULL) {
+        float pZ = cZ + constants::CHUNK_SIZE;
+        int z = constants::CHUNK_SIZE - 1;
+        for (int x = 0; x < constants::CHUNK_SIZE; x++) {
+            float pX = cX + x * constants::TILE_SIZE;
+            glm::vec3 p = glm::vec3(pX, chunkNE->getTile(x, 0)->y, pZ);
+            mesh->vertices.push_back(p);
+
+            if (x != 0) {
+                // Generate triangle elements using indices of E, S & W points
+                unsigned int iWest = x * constants::CHUNK_SIZE + z;
+                unsigned int iSouth = (x - 1) * constants::CHUNK_SIZE + z;
+                unsigned int iEast = i - 1;
+
+                mesh->elements.push_back(i);
+                mesh->elements.push_back(iWest);
+                mesh->elements.push_back(iSouth);
+
+                mesh->elements.push_back(i);
+                mesh->elements.push_back(iSouth);
+                mesh->elements.push_back(iEast);
+            }
+
+            i++;
+        }
+    }
+    unsigned int iLastNE = i - 1;
+    // Lastly create the Northern most point using the final verts from both
+    // (if both NW & NE chunks are loaded)
+    Chunk* chunkN = world->tryGetChunk(posX + 1, posZ + 1);
+    if (chunkNW != NULL && chunkNE != NULL && chunkN != NULL) {
+        float pX = cX + constants::CHUNK_SIZE;
+        float pZ = cZ + constants::CHUNK_SIZE;
+        glm::vec3 p = glm::vec3(pX, chunkN->getTile(0, 0)->y, pZ);
+        mesh->vertices.push_back(p);
+
+        unsigned int iEast = iLastNE;
+        unsigned int iSouth = iLastInsideVert;
+        unsigned int iWest = iLastNW;
+
+        mesh->elements.push_back(i);
+        mesh->elements.push_back(iSouth);
+        mesh->elements.push_back(iEast);
+
+        mesh->elements.push_back(i);
+        mesh->elements.push_back(iWest);
+        mesh->elements.push_back(iSouth);
+    }
+
 }
