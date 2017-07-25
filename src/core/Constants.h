@@ -18,12 +18,22 @@ namespace constants {
 
     const int WORLD_WIDTH = 64;
     const int WORLD_DEPTH = 64;
-    const int WORLD_HEIGHT = 8;
+    const int WORLD_HEIGHT = 16;
     const int CHUNK_SIZE = 32;
     const int TILE_SIZE = 1;
 
-    static int LOAD_DISTANCE = 3;
-    static int UNLOAD_DISTANCE = 4;
+    static int LOAD_DISTANCE = 10;
+    static int UNLOAD_DISTANCE = 12;
+
+    const int LOD_1ST = 1;
+    const int LOD_2ND = 2;
+    const int LOD_3RD = 4;
+    const int LOD_4TH = 8;
+    const int LOD_5TH = 16;
+    static int LOD_1ST_DISTANCE = 2;
+    static int LOD_2ND_DISTANCE = 4;
+    static int LOD_3RD_DISTANCE = 6;
+    static int LOD_4TH_DISTANCE = 8;
 }
 
 #endif //RECLAIMER_CONSTANTS_H

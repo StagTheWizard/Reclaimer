@@ -38,6 +38,8 @@ public:
     void setTile(int x, int z, TileType tile);
 
     bool isModified();
+    bool needsMeshRegenerated();
+
     void setLevelOfDetail(int lod);
     void updateMesh();
 
@@ -48,7 +50,8 @@ public:
 protected:
 private:
     bool modified = false;
-    int levelOfDetail = 1;
+    bool regenerateMesh = true;
+    int levelOfDetail = constants::LOD_5TH;
 
     Tile tiles[constants::CHUNK_SIZE][constants::CHUNK_SIZE];
     Chunk();

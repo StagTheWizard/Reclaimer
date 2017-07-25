@@ -29,7 +29,6 @@ int GameState::initialise() {
     // Initialise the world
     // TODO generation phase
     world = new World(constants::WORLD_DEPTH, constants::WORLD_WIDTH);
-    world->updateMesh();
 
     return EXIT_SUCCESS;
 }
@@ -62,8 +61,8 @@ void GameState::update() {
     this->processInput();
     camera->processInput(engine->window);
 
-    world->updateLoading(camera->pos);
-    world->update();
+    // Update the world w.r.t. the camera position
+    world->update(camera->pos);
 
     this->runTime = timer.str();
     this->cameraInfo = "camera info: " +

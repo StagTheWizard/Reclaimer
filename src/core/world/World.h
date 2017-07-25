@@ -35,10 +35,7 @@ public:
     World(int depth, int width, int seed = rand());
     ~World();
 
-    void update();
-
-    bool meshOutdated;
-    void updateMesh();
+    void update(glm::vec3 cameraPos);
 
     int getDepth();
     int getWidth();
@@ -46,12 +43,6 @@ public:
     Chunk* getChunk(int x, int z);
     Chunk* tryGetChunk(int x, int z);
 
-    void updateLoading(glm::vec3 cameraPos);
-    void saveChunk(int x, int z);
-    void saveChunk(Chunk* chunk);
-    bool loadChunk(int x, int z);
-    bool unloadChunk(int x, int z);
-    bool unloadChunk(Chunk* chunk);
     double chunkVerticesCount();
 
     Tile* getTile(int chunkX, int chunkZ, int x, int z);
@@ -63,11 +54,21 @@ private:
 
     std::vector<std::vector<Chunk*>> chunks;
 
+    void updateLoading(glm::vec3 cameraPos);
+    void updateLod(glm::vec3 cameraPos);
+    void updateMeshes();
+
+    void saveChunk(int x, int z);
+    void saveChunk(Chunk* chunk);
+    bool loadChunk(int x, int z);
+
+    bool unloadChunk(int x, int z);
+    bool unloadChunk(Chunk* chunk);
+
     std::string getChunkFileName(int x, int z);
     bool chunkHasSaveData(int x, int z);
 
-    bool chunkInLoadRadius(int x, int z, glm::vec3 centre);
-    bool chunkOutsideUnloadRadius(int x, int z, glm::vec3 centre);
+    bool chunkInRadius(int x, int z, glm::vec3 centre, int radius);
 };
 
 

@@ -53,15 +53,9 @@ World::World(int depth, int width, int seed) {
     for (int z = 0; z < depth; z++) {
         this->chunks[z].resize(width);
         for (int x = 0; x < width; x++) {
-//            if (chunkHasSaveData(x, z))
-//                loadChunk(x, z);
-//            else
-//                chunks[z][x] = new Chunk(this, x, z);
             chunks[z][x] = NULL;
         }
     }
-
-    this->meshOutdated = true;
 }
 
 
@@ -78,21 +72,10 @@ int World::getWidth() {
 }
 
 
-void World::update() {
-    // We no longer generate world wide meshes but chunk-specific meshes
-    if (meshOutdated)
-        updateMesh();
-}
-
-
-void World::updateMesh() {
-    for (int z = 0; z < depth; z++) {
-        for (int x = 0; x < width; x++) {
-            if (chunks[z][x] != NULL)
-                chunks[z][x]->updateMesh();
-        }
-    }
-    meshOutdated = false;
+void World::update(glm::vec3 cameraPos) {
+    updateLoading(cameraPos);
+    updateLod(cameraPos);
+    updateMeshes();
 }
 
 
@@ -135,12 +118,12 @@ void World::updateLoading(glm::vec3 cameraPos) {
         for (int x = width - 1; x >= 0; x--) {
             Chunk* chunk = tryGetChunk(x, z);
             bool loaded = false;
-            if (chunk == NULL && chunkInLoadRadius(x, z, cameraPos)) {
+            if (chunk == NULL && chunkInRadius(x, z, cameraPos, constants::LOAD_DISTANCE)) {
                 loadChunk(x, z);
                 loaded = true;
             }
             bool unloaded = false;
-            if (chunk != NULL && chunkOutsideUnloadRadius(x, z, cameraPos)) {
+            if (chunk != NULL && !chunkInRadius(x, z, cameraPos, constants::UNLOAD_DISTANCE)) {
                 unloadChunk(x, z);
                 unloaded = true;
             }
@@ -153,6 +136,39 @@ void World::updateLoading(glm::vec3 cameraPos) {
                 if (cSW != NULL) cSW->updateMesh();
                 Chunk* cS = tryGetChunk(x - 1, z - 1);
                 if (cS != NULL) cS->updateMesh();
+            }
+        }
+    }
+}
+
+
+void World::updateLod(glm::vec3 cameraPos) {
+    for (int z = depth - 1; z >= 0; z--) {
+        for (int x = width - 1; x >= 0; x--) {
+            Chunk* chunk = tryGetChunk(x, z);
+            if (chunk != NULL) {
+                if (chunkInRadius(x, z, cameraPos, constants::LOD_1ST_DISTANCE))
+                    chunk->setLevelOfDetail(constants::LOD_1ST);
+                else if (chunkInRadius(x, z, cameraPos, constants::LOD_2ND_DISTANCE))
+                    chunk->setLevelOfDetail(constants::LOD_2ND);
+                else if (chunkInRadius(x, z, cameraPos, constants::LOD_3RD_DISTANCE))
+                    chunk->setLevelOfDetail(constants::LOD_3RD);
+                else if (chunkInRadius(x, z, cameraPos, constants::LOD_4TH_DISTANCE))
+                    chunk->setLevelOfDetail(constants::LOD_4TH);
+                else
+                    chunk->setLevelOfDetail(constants::LOD_5TH);
+            }
+        }
+    }
+}
+
+
+void World::updateMeshes() {
+    for (int z = depth - 1; z >= 0; z--) {
+        for (int x = width - 1; x >= 0; x--) {
+            Chunk* chunk = tryGetChunk(x, z);
+            if (chunk != NULL && chunk->needsMeshRegenerated()) {
+                chunk->updateMesh();
             }
         }
     }
@@ -238,19 +254,10 @@ double World::chunkVerticesCount() {
 }
 
 
-bool World::chunkInLoadRadius(int x, int z, glm::vec3 centre) {
+bool World::chunkInRadius(int x, int z, glm::vec3 centre, int radius) {
     float chunkCentreX = x * constants::CHUNK_SIZE + 0.5f * constants::CHUNK_SIZE;
     float chunkCentreZ = z * constants::CHUNK_SIZE + 0.5f * constants::CHUNK_SIZE;
-    float worldRadius = static_cast<float>(constants::LOAD_DISTANCE * constants::CHUNK_SIZE);
+    float worldRadius = static_cast<float>(radius * constants::CHUNK_SIZE);
 
     return extensions::withinSquareRadius(chunkCentreX, chunkCentreZ, centre.x, centre.z, worldRadius);
-}
-
-
-bool World::chunkOutsideUnloadRadius(int x, int z, glm::vec3 centre) {
-    float chunkCentreX = x * constants::CHUNK_SIZE + 0.5f * constants::CHUNK_SIZE;
-    float chunkCentreZ = z * constants::CHUNK_SIZE + 0.5f * constants::CHUNK_SIZE;
-    float worldRadius = constants::UNLOAD_DISTANCE * constants::CHUNK_SIZE;
-
-    return !extensions::withinSquareRadius(chunkCentreX, chunkCentreZ, centre.x, centre.z, worldRadius);
 }

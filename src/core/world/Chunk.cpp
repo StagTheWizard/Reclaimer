@@ -28,7 +28,7 @@ Chunk::Chunk(World *world, int posX, int posZ) {
         }
     }
 
-    updateMesh();
+    this->regenerateMesh = true;
 }
 
 
@@ -42,6 +42,11 @@ bool Chunk::isModified() {
 }
 
 
+bool Chunk::needsMeshRegenerated() {
+    return this->regenerateMesh;
+}
+
+
 Tile *Chunk::getTile(int x, int z) {
     return &tiles[z][x];
 }
@@ -52,24 +57,26 @@ void Chunk::setTile(int x, int z, int typeId) {
         return;
     tiles[z][x].typeId = typeId;
     modified = true;
-    updateMesh();
+    regenerateMesh = true;
 }
 
 
 void Chunk::setTileHeight(int x, int z, int height) {
     this->tiles[z][x].y = height;
+    this->regenerateMesh = true;
 }
 
 
 void Chunk::setTile(int x, int z, TileType tile) {
-    setTile(z, x, tile.id);
+    this->setTile(z, x, tile.id);
+    this->regenerateMesh = true;
 }
 
 
 void Chunk::setLevelOfDetail(int lod) {
-    if (constants::CHUNK_SIZE % lod != 0) return;
+    if (constants::CHUNK_SIZE % lod != 0 || lod == this->levelOfDetail) return;
     this->levelOfDetail = lod;
-    updateMesh();
+    this->regenerateMesh = true;
 }
 
 
@@ -189,4 +196,5 @@ void Chunk::updateMesh() {
         mesh->elements.push_back(iSouth);
     }
 
+    regenerateMesh = false;
 }

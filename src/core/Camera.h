@@ -15,7 +15,7 @@
 
 class Camera {
 public:
-    glm::vec3 pos = glm::vec3(-5, 1, -5);
+    glm::vec3 pos = glm::vec3(-5, constants::WORLD_HEIGHT, -5);
     glm::vec3 upDir = glm::vec3(0, 1, 0);
     glm::vec3 viewDir = glm::vec3(1, 0, 0);
     glm::vec3 viewPt = pos + viewDir;
