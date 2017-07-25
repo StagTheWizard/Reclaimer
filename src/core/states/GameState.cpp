@@ -9,7 +9,7 @@
 
 #include "core/rendering/TextRenderer.h"
 #include "core/Constants.h"
-#include "extensions/StringExtensions.h"
+#include "extensions/text/NumericToString.h"
 
 
 GameState::GameState(Engine *engine) : State(engine) {
@@ -62,6 +62,7 @@ void GameState::update() {
     this->processInput();
     camera->processInput(engine->window);
 
+    world->updateLoading(camera->pos);
     world->update();
 
     this->runTime = timer.str();

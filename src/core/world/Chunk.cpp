@@ -27,6 +27,8 @@ Chunk::Chunk(World *world, int posX, int posZ) {
             this->tiles[z][x] = Tile(TileTypes::Dirt.id, x, z, y);
         }
     }
+
+    updateMesh();
 }
 
 

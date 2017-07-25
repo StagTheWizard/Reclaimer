@@ -16,11 +16,14 @@ namespace constants {
     const std::string WINDOW_TITLE = "Reclaimer " + VERSION;
 
 
-    const int WORLD_WIDTH = 8;
-    const int WORLD_DEPTH = 8;
+    const int WORLD_WIDTH = 64;
+    const int WORLD_DEPTH = 64;
     const int WORLD_HEIGHT = 8;
     const int CHUNK_SIZE = 32;
     const int TILE_SIZE = 1;
+
+    static int LOAD_DISTANCE = 3;
+    static int UNLOAD_DISTANCE = 4;
 }
 
 #endif //RECLAIMER_CONSTANTS_H

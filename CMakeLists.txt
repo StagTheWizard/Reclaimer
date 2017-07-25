@@ -101,7 +101,8 @@ file(GLOB PROJECT_SOURCES
         src/core/states/GameState.h
         src/core/states/GameState.cpp
 
-        src/extensions/StringExtensions.h
+        src/extensions/text/NumericToString.h
+        src/extensions/geometry/SpacialChecks.h
         src/extensions/fastnoise/FastNoise.h
         src/extensions/fastnoise/FastNoise.cpp
         )

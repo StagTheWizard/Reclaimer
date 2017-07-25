@@ -45,9 +45,13 @@ public:
 
     Chunk* getChunk(int x, int z);
     Chunk* tryGetChunk(int x, int z);
+
+    void updateLoading(glm::vec3 cameraPos);
     void saveChunk(int x, int z);
     void saveChunk(Chunk* chunk);
     bool loadChunk(int x, int z);
+    bool unloadChunk(int x, int z);
+    bool unloadChunk(Chunk* chunk);
     double chunkVerticesCount();
 
     Tile* getTile(int chunkX, int chunkZ, int x, int z);
@@ -61,6 +65,9 @@ private:
 
     std::string getChunkFileName(int x, int z);
     bool chunkHasSaveData(int x, int z);
+
+    bool chunkInLoadRadius(int x, int z, glm::vec3 centre);
+    bool chunkOutsideUnloadRadius(int x, int z, glm::vec3 centre);
 };
 
 

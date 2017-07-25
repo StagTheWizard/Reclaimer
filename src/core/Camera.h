@@ -25,9 +25,9 @@ public:
     float yaw;
     float initialFOV = 45;
 
-    const float DIRECTIONAL_SPEED = 0.3f;
-    const float LATERAL_SPEED = 0.3f;
-    const float VERTICAL_SPEED = 0.1f;
+    const float DIRECTIONAL_SPEED = 2.0f;
+    const float LATERAL_SPEED = 0.5f;
+    const float VERTICAL_SPEED = 0.3f;
     const float ROTATIONAL_SPEED = 0.5f;
     const float MOUSE_SPEED = 0.005f;
 
