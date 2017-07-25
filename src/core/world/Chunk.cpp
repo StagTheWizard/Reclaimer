@@ -66,6 +66,13 @@ void Chunk::setTile(int x, int z, TileType tile) {
 }
 
 
+void Chunk::setLevelOfDetail(int lod) {
+    if (constants::CHUNK_SIZE % lod != 0) return;
+    this->levelOfDetail = lod;
+    updateMesh();
+}
+
+
 void Chunk::updateMesh() {
     this->mesh = new TerrainMesh();
 
@@ -73,18 +80,18 @@ void Chunk::updateMesh() {
     int cZ = posZ * constants::CHUNK_SIZE * constants::TILE_SIZE;
 
     unsigned int i = 0;
-    for (int x = 0; x < constants::CHUNK_SIZE; x++) {
+    for (int x = 0; x < constants::CHUNK_SIZE; x += levelOfDetail) {
         float pX = cX + x * constants::TILE_SIZE;
 
-        for (int z = 0; z < constants::CHUNK_SIZE; z++) {
+        for (int z = 0; z < constants::CHUNK_SIZE; z += levelOfDetail) {
             float pZ = cZ + z * constants::TILE_SIZE;
             float y = tiles[z][x].y;
             glm::vec3 p = glm::vec3(pX, y, pZ);
             mesh->vertices.push_back(p);
             if (x != 0 && z != 0) {
                 // Generate triangle elements using indices of E, S & W points
-                unsigned int iWest = i - constants::CHUNK_SIZE;
-                unsigned int iSouth = i - constants::CHUNK_SIZE - 1;
+                unsigned int iWest = i - (constants::CHUNK_SIZE / levelOfDetail);
+                unsigned int iSouth = i - (constants::CHUNK_SIZE / levelOfDetail) - 1;
                 unsigned int iEast = i - 1;
 
                 mesh->elements.push_back(i);
@@ -106,8 +113,8 @@ void Chunk::updateMesh() {
     Chunk* chunkNW = world->tryGetChunk(posX + 1, posZ);
     if (chunkNW != NULL) {
         float pX = cX + constants::CHUNK_SIZE;
-        int x = constants::CHUNK_SIZE - 1;
-        for (int z = 0; z < constants::CHUNK_SIZE; z++) {
+        int x = (constants::CHUNK_SIZE / levelOfDetail) - 1;
+        for (int z = 0; z < constants::CHUNK_SIZE; z += levelOfDetail) {
             float pZ = cZ + z * constants::TILE_SIZE;
             glm::vec3 p = glm::vec3(pX, chunkNW->getTile(0, z)->y, pZ);
             mesh->vertices.push_back(p);
@@ -115,8 +122,8 @@ void Chunk::updateMesh() {
             if (z != 0) {
                 // Generate triangle elements using indices of E, S & W points
                 unsigned int iWest = i - 1;
-                unsigned int iEast = x * constants::CHUNK_SIZE + z;
-                unsigned int iSouth = x * constants::CHUNK_SIZE + (z - 1);
+                unsigned int iEast = x * (constants::CHUNK_SIZE / levelOfDetail) + (z / levelOfDetail);
+                unsigned int iSouth = x * (constants::CHUNK_SIZE / levelOfDetail) + ((z / levelOfDetail) - 1);
 
                 mesh->elements.push_back(i);
                 mesh->elements.push_back(iWest);
@@ -135,16 +142,16 @@ void Chunk::updateMesh() {
     Chunk* chunkNE = world->tryGetChunk(posX, posZ + 1);
     if (chunkNE != NULL) {
         float pZ = cZ + constants::CHUNK_SIZE;
-        int z = constants::CHUNK_SIZE - 1;
-        for (int x = 0; x < constants::CHUNK_SIZE; x++) {
+        int z = (constants::CHUNK_SIZE / levelOfDetail) - 1;
+        for (int x = 0; x < constants::CHUNK_SIZE; x += levelOfDetail) {
             float pX = cX + x * constants::TILE_SIZE;
             glm::vec3 p = glm::vec3(pX, chunkNE->getTile(x, 0)->y, pZ);
             mesh->vertices.push_back(p);
 
             if (x != 0) {
                 // Generate triangle elements using indices of E, S & W points
-                unsigned int iWest = x * constants::CHUNK_SIZE + z;
-                unsigned int iSouth = (x - 1) * constants::CHUNK_SIZE + z;
+                unsigned int iWest = (x / levelOfDetail) * (constants::CHUNK_SIZE / levelOfDetail) + z;
+                unsigned int iSouth = ((x / levelOfDetail) - 1) * (constants::CHUNK_SIZE / levelOfDetail) + z;
                 unsigned int iEast = i - 1;
 
                 mesh->elements.push_back(i);

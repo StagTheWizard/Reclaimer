@@ -38,6 +38,7 @@ public:
     void setTile(int x, int z, TileType tile);
 
     bool isModified();
+    void setLevelOfDetail(int lod);
     void updateMesh();
 
     template<class Archive>
@@ -47,6 +48,7 @@ public:
 protected:
 private:
     bool modified = false;
+    int levelOfDetail = 1;
 
     Tile tiles[constants::CHUNK_SIZE][constants::CHUNK_SIZE];
     Chunk();
