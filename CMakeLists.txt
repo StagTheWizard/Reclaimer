@@ -64,6 +64,7 @@ file(GLOB PROJECT_SOURCES
         src/core/world/World.cpp
         src/core/world/FilterMapConfig.h
         src/core/world/TerrainMesh.h
+        src/core/structs/Light.h
 
         src/core/world/Chunk.h
         src/core/world/Chunk.cpp

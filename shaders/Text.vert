@@ -1,8 +1,8 @@
 #version 330 core
 
 
-layout (location=0) in vec2 pos;
-layout (location=1) in vec2 UVin;
+layout (location = 0) in vec2 pos;
+layout (location = 1) in vec2 UVin;
 
 out vec2 UV;
 

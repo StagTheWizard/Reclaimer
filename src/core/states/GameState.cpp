@@ -84,6 +84,7 @@ void GameState::draw() {
     engine->worldRenderer->modelMatrix = model;
     engine->worldRenderer->viewMatrix = view;
     engine->worldRenderer->projectionMatrix = projection;
+    engine->worldRenderer->cameraPosition = glm::vec4(camera->pos, 1.0f);
     // render terrain
     for (int z = 0; z < world->getDepth(); z++) {
         for (int x = 0; x < world->getWidth(); x++) {

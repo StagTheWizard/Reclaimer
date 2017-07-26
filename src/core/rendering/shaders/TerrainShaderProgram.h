@@ -13,12 +13,20 @@
 
 class TerrainShaderProgram : public ShaderProgram {
 public:
+    GLuint uniformModelMatrix;
+    GLuint uniformViewMatrix;
+    GLuint uniformModelViewMatrix;
     GLuint uniformMvpMatrix;
+    GLuint uniformNormalMatrix;
+    GLuint uniformCameraPosition;
+    GLuint uniformLightPosition;
 
     TerrainShaderProgram();
     ~TerrainShaderProgram();
 
-    void updateUniforms(glm::mat4 mvpMatrix);
+    void updateUniforms(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 modelViewMatrix,
+                        glm::mat4 mvpMatrix, glm::mat4 normalMatrix, glm::vec4 cameraPosition,
+                        glm::vec4 lightPos);
 protected:
     virtual void initialiseShaders() override;
     virtual void bindLocations() override;

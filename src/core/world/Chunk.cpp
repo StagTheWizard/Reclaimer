@@ -2,6 +2,7 @@
 // Created by montgomery anderson on 18/07/17.
 //
 
+#include <glm/geometric.hpp>
 #include "Chunk.h"
 
 #include "TileTypes.h"
@@ -95,6 +96,8 @@ void Chunk::updateMesh() {
             float y = tiles[z][x].y;
             glm::vec3 p = glm::vec3(pX, y, pZ);
             mesh->vertices.push_back(p);
+            mesh->normals.push_back(getPointNormal(x, z));
+
             if (x != 0 && z != 0) {
                 // Generate triangle elements using indices of E, S & W points
                 unsigned int iWest = i - (constants::CHUNK_SIZE / levelOfDetail);
@@ -108,6 +111,8 @@ void Chunk::updateMesh() {
                 mesh->elements.push_back(i);
                 mesh->elements.push_back(iEast);
                 mesh->elements.push_back(iSouth);
+            } else {
+
             }
 
             i++;
@@ -125,6 +130,7 @@ void Chunk::updateMesh() {
             float pZ = cZ + z * constants::TILE_SIZE;
             glm::vec3 p = glm::vec3(pX, chunkNW->getTile(0, z)->y, pZ);
             mesh->vertices.push_back(p);
+            mesh->normals.push_back(getPointNormal(constants::CHUNK_SIZE, z));
 
             if (z != 0) {
                 // Generate triangle elements using indices of E, S & W points
@@ -154,6 +160,7 @@ void Chunk::updateMesh() {
             float pX = cX + x * constants::TILE_SIZE;
             glm::vec3 p = glm::vec3(pX, chunkNE->getTile(x, 0)->y, pZ);
             mesh->vertices.push_back(p);
+            mesh->normals.push_back(getPointNormal(x, constants::CHUNK_SIZE));
 
             if (x != 0) {
                 // Generate triangle elements using indices of E, S & W points
@@ -182,6 +189,7 @@ void Chunk::updateMesh() {
         float pZ = cZ + constants::CHUNK_SIZE;
         glm::vec3 p = glm::vec3(pX, chunkN->getTile(0, 0)->y, pZ);
         mesh->vertices.push_back(p);
+        mesh->normals.push_back(getPointNormal(constants::CHUNK_SIZE, constants::CHUNK_SIZE));
 
         unsigned int iEast = iLastNE;
         unsigned int iSouth = iLastInsideVert;
@@ -197,4 +205,15 @@ void Chunk::updateMesh() {
     }
 
     regenerateMesh = false;
+}
+
+
+glm::vec3 Chunk::getPointNormal(int x, int z) {
+    float pX = posX * constants::CHUNK_SIZE + x;
+    float pZ = posZ * constants::CHUNK_SIZE + z;
+    float yPX = world->noiseGenerator->GetSimplexFractal(pX + 1, pZ);
+    float yNX = world->noiseGenerator->GetSimplexFractal(pX - 1, pZ);
+    float yPZ = world->noiseGenerator->GetSimplexFractal(pX, pZ + 1);
+    float yNZ = world->noiseGenerator->GetSimplexFractal(pX, pZ - 1);
+    return glm::normalize(glm::vec3(yPX - yNX, 2.0, yPZ - yNZ));
 }

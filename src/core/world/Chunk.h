@@ -57,6 +57,7 @@ private:
     Chunk();
 
     void setTileHeight(int x, int z, int height);
+    glm::vec3 getPointNormal(int x, int z);
 };
 
 BOOST_CLASS_VERSION(Chunk, 0)

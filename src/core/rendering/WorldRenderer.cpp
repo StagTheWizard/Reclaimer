@@ -37,16 +37,19 @@ int WorldRenderer::initialiseShaders() {
 void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
     terrainShader->activate();
     glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
-    terrainShader->updateUniforms(mvpMatrix);
+    glm::mat4 mvMatrix = viewMatrix * modelMatrix;
+    glm::mat4 normalMatrix = glm::transpose(glm::inverse(mvMatrix));
+    terrainShader->updateUniforms(modelMatrix, viewMatrix, mvMatrix, mvpMatrix, normalMatrix, cameraPosition, sun.position);
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glGenBuffers(1, &vertexBuffer);
+    glGenBuffers(1, &normalBuffer);
     glGenBuffers(1, &elementBuffer);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // First VBO
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -55,6 +58,12 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->normals.size(), &mesh->normals[0], GL_STATIC_DRAW);
+//
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
@@ -73,7 +82,9 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
 
     glUseProgram(0);
     glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
     glDeleteBuffers(1, &vertexBuffer);
+    glDeleteBuffers(1, &normalBuffer);
     glDeleteBuffers(1, &elementBuffer);
     glDeleteVertexArrays(1, &vao);
 }
