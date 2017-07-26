@@ -21,11 +21,11 @@ void main() {
     vec4 eyeLightPosition = viewMatrix * lightPosition;
     vec4 eyeNormal = normalMatrix * vec4(fragNormal, 0.0);
 
-    vec4 materialColor = vec4(0.4, 0.4, 0.45, 1.0);
-    vec3 materialSpecularColor = vec3(1.0);
-    float materialShininess = 80.0;
+    vec4 materialColor = vec4(0.8, 0.6, 0.5, 1.0);
+    //vec3 materialSpecularColor = vec3(1.0);
+    float materialShininess = 100.0;
 
-    vec3 ambientColor = vec3(0.3, 0.3, 0.3);
+    vec3 ambientColor = vec3(0.2);
     vec3 diffuseColor = vec3(1.0);
     vec3 specularColor = vec3(1.0);
 
@@ -54,17 +54,17 @@ void main() {
     // diffuse
 //    float diffuseCoefficient = max(0.0, dot(surfaceToLight, normal));
     float diffuseCoefficient = max(dot(eyeSurfaceToLight, eyeNormal), 0.0);
-    vec3 diffuse = diffuseCoefficient * diffuseColor.rgb;
+    vec3 diffuse = materialColor.rgb * diffuseCoefficient;
 
     // specular
-    //float specularCoefficient = 0.0;
+//    float specularCoefficient = 0.0;
     //if (diffuseCoefficient > 0.0)
         //specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), materialShininess);
         //specularCoefficient = max(dot(halfVector, eyeNormal), 0);
-//    float specularCoefficient = max(dot(halfVector, eyeNormal), 0.0);
-//    vec3 specular = specularCoefficient * materialSpecularColor.rgb * specularColor.rgb;
+    float specularCoefficient = max(dot(halfVector, eyeNormal), 0.0);
+    vec3 specular = pow(specularCoefficient, materialShininess) * specularColor.rgb;
 
-    vec3 linearColor = vec3(ambient + attenuation * (diffuse /*+ specular*/));
+    vec3 linearColor = vec3(ambient + attenuation * (diffuse + specular));
 //    linearColor = ambient;
     vec3 gamma = vec3(1.0 / 2.2);
     finalColor = vec4(pow(linearColor, gamma), materialColor.a);

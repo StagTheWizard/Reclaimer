@@ -22,8 +22,8 @@ namespace constants {
     const int CHUNK_SIZE = 32;
     const int TILE_SIZE = 1;
 
-    static int LOAD_DISTANCE = 10;
-    static int UNLOAD_DISTANCE = 12;
+    static int LOAD_DISTANCE = 14;
+    static int UNLOAD_DISTANCE = 16;
 
     const int LOD_1ST = 1;
     const int LOD_2ND = 2;
@@ -31,9 +31,9 @@ namespace constants {
     const int LOD_4TH = 8;
     const int LOD_5TH = 16;
     static int LOD_1ST_DISTANCE = 6;
-    static int LOD_2ND_DISTANCE = 7;
-    static int LOD_3RD_DISTANCE = 7;
-    static int LOD_4TH_DISTANCE = 8;
+    static int LOD_2ND_DISTANCE = 8;
+    static int LOD_3RD_DISTANCE = 10;
+    static int LOD_4TH_DISTANCE = 12;
 }
 
 #endif //RECLAIMER_CONSTANTS_H
