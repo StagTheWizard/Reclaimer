@@ -50,6 +50,7 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // First VBO
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -71,10 +72,9 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
 
 
     glBindVertexArray(vao);
-//    glPatchParameteri(GL_PATCH_VERTICES, 3);
-//    glDrawArrays(GL_TRIANGLES, 0, mesh->vertices.size());
-//    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
+    glPatchParameteri(GL_PATCH_VERTICES, 3);
+    glDrawElements(GL_PATCHES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
+//    glDrawElements(GL_TRIANGLES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);

@@ -110,6 +110,8 @@ file(GLOB PROJECT_SOURCES
 
 set(PROJECT_SHADERS
         shaders/Terrain.vert
+        shaders/Terrain.tesc
+        shaders/Terrain.tese
         shaders/Terrain.frag
         shaders/Text.vert
         shaders/Text.frag)

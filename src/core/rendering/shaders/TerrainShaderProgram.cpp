@@ -18,6 +18,8 @@ TerrainShaderProgram::~TerrainShaderProgram() {
 
 void TerrainShaderProgram::initialiseShaders() {
     vertShader = loadShader(GL_VERTEX_SHADER, "shaders/Terrain.vert");
+    tessCtrlShader = loadShader(GL_TESS_CONTROL_SHADER, "shaders/Terrain.tesc");
+    tessEvalShader = loadShader(GL_TESS_EVALUATION_SHADER, "shaders/Terrain.tese");
     fragShader = loadShader(GL_FRAGMENT_SHADER, "shaders/Terrain.frag");
 }
 
@@ -57,5 +59,6 @@ void TerrainShaderProgram::updateUniforms(glm::mat4 modelMatrix, glm::mat4 viewM
     glUniformMatrix4fv(uniformModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
     glUniformMatrix4fv(uniformMvpMatrix, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
     glUniformMatrix4fv(uniformNormalMatrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    glUniform4fv(uniformCameraPosition, 1, glm::value_ptr(cameraPosition));
     glUniform4fv(uniformLightPosition, 1, glm::value_ptr(lightPos));
 }

@@ -11,15 +11,12 @@ uniform mat4 mvpMatrix;
 //uniform vec4 lightPosition;
 
 //out vec4 fragColor;
-out vec3 fragPosition;
-out vec3 fragNormal;
+
+out vec3 tescNormal;
 
 void main() {
-
-    fragPosition = vertPosition;
-    fragNormal = vertNormal;
-
-    gl_Position = mvpMatrix * vec4(vertPosition, 1.0);
+    gl_Position = vec4(vertPosition, 1.0);
+    tescNormal = vertNormal;
 }
 
     /*vec4 white = vec4(1.0); // light color (diffuse & specular)
