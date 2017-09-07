@@ -44,7 +44,7 @@ int TextRenderer::initialiseFonts() {
 
 
 void TextRenderer::render(std::string textStr, Font fontEnum, int size, glm::vec2 pos) {
-    render(textStr, fontEnum, size, pos, glm::vec4(1.0, 0.6, 0.0, 1.0));
+    render(textStr, fontEnum, size, pos, glm::vec4(1.0, 1.0, 1.0, 1.0));
 }
 
 
