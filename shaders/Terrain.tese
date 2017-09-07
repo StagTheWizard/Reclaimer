@@ -17,8 +17,6 @@ void main() {
                   + gl_TessCoord.y * gl_in[1].gl_Position
                   + gl_TessCoord.z * gl_in[2].gl_Position;
 
-    position.y += (sin(position.x) + sin(position.y)) * 0.1;
-
     // pass through position to fragment shader
     fragPosition = position;
     // interpolate normals
