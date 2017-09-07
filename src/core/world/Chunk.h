@@ -49,9 +49,11 @@ public:
     }
 protected:
 private:
+    const float LOD_SEEM_HEIGHT = 0.0f;
+
     bool modified = false;
     bool regenerateMesh = true;
-    int levelOfDetail = constants::LOD_5TH;
+    int levelOfDetail = constants::LOD_1ST;
 
     Tile tiles[constants::CHUNK_SIZE][constants::CHUNK_SIZE];
     Chunk();

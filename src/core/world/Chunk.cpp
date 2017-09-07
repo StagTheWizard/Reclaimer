@@ -78,6 +78,19 @@ void Chunk::setLevelOfDetail(int lod) {
     if (constants::CHUNK_SIZE % lod != 0 || lod == this->levelOfDetail) return;
     this->levelOfDetail = lod;
     this->regenerateMesh = true;
+    // if the LOD is now less than a neighbour, update neighbouring chunks meshes with different LODs
+    Chunk* chunkNW = world->tryGetChunk(posX + 1, posZ);
+    if (chunkNW != NULL && chunkNW->levelOfDetail <= lod)
+        chunkNW->regenerateMesh = true;
+    Chunk* chunkNE = world->tryGetChunk(posX, posZ + 1);
+    if (chunkNE != NULL && chunkNE->levelOfDetail <= lod)
+        chunkNE->regenerateMesh = true;
+    Chunk* chunkSW = world->tryGetChunk(posX, posZ - 1);
+    if (chunkSW != NULL && chunkSW->levelOfDetail <= lod)
+        chunkSW->regenerateMesh = true;
+    Chunk* chunkSE = world->tryGetChunk(posX - 1, posZ);
+    if (chunkSE != NULL && chunkSE->levelOfDetail <= lod)
+        chunkSE->regenerateMesh = true;
 }
 
 
@@ -87,17 +100,71 @@ void Chunk::updateMesh() {
     int cX = posX * constants::CHUNK_SIZE * constants::TILE_SIZE;
     int cZ = posZ * constants::CHUNK_SIZE * constants::TILE_SIZE;
 
+    Chunk* chunkNE = world->tryGetChunk(posX, posZ + 1);
+    Chunk* chunkNW = world->tryGetChunk(posX + 1, posZ);
+    Chunk* chunkSW = world->tryGetChunk(posX, posZ - 1);
+    Chunk* chunkSE = world->tryGetChunk(posX - 1, posZ);
     unsigned int i = 0;
-    for (int x = 0; x < constants::CHUNK_SIZE; x += levelOfDetail) {
+    for (int x = 0; x < constants::CHUNK_SIZE - levelOfDetail + 1; x += levelOfDetail) {
         float pX = cX + x * constants::TILE_SIZE;
 
-        for (int z = 0; z < constants::CHUNK_SIZE; z += levelOfDetail) {
+        for (int z = 0; z < constants::CHUNK_SIZE - levelOfDetail + 1; z += levelOfDetail) {
             float pZ = cZ + z * constants::TILE_SIZE;
             float y = tiles[z][x].y;
             glm::vec3 p = glm::vec3(pX, y, pZ);
+            // Check for LOD boundaries on edge vertices .. as p.y may need to be modified to prevent seams in LOD levels
+            if (z == 0 && x < constants::CHUNK_SIZE
+                && chunkSW != NULL && chunkSW->levelOfDetail > levelOfDetail) {
+                /* if
+                 * -- we are on the z boundary (excluding corners)
+                 * -- and we are not on the edge of the map
+                 * -- and the level of detail decreases
+                 */
+                if (x == constants::CHUNK_SIZE - levelOfDetail) {
+                    if (chunkNW != NULL) {
+                        double avg = (tiles[0][x - levelOfDetail].y + chunkNW->getTile(0, 0)->y) / 2.0f;
+                        p.y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+//                    p.y = 0.0f;
+                    }
+                } else {
+                    if ((x - levelOfDetail) % (levelOfDetail * 2) == 0) {
+                        if (x > 0) {
+                            double avg = (tiles[0][x - levelOfDetail].y + tiles[0][x + levelOfDetail].y) / 2.0f;
+                            p.y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+//                        p.y = 0;
+                        }
+                    }
+                }
+            }
+            if (x == 0 && z < constants::CHUNK_SIZE
+                && chunkSE != NULL && chunkSE->levelOfDetail > levelOfDetail) {
+                /* if
+                 * -- we are on the x boundary (excluding corners)
+                 * -- and we are not on the edge of the map
+                 * -- and the level of detail decreases
+                 *
+                 * then we must seam the tear by making every second emitted vertex (vertex without equivalent vertex
+                 * in neighbouring chunk) along the boundary's height equal to the average of it's emitted neighbours */
+                if (z == constants::CHUNK_SIZE - levelOfDetail) {
+                    if (chunkNE != NULL) {
+                        double avg = (tiles[z - levelOfDetail][0].y + chunkNE->getTile(0, 0)->y) / 2.0f;
+                        p.y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+//                    p.y = 0.0f;
+                    }
+                } else {
+                    if ((z - levelOfDetail) % (levelOfDetail * 2) == 0) {
+                        if (z > 0) {
+                            double avg = (tiles[z - levelOfDetail][0].y + tiles[z + levelOfDetail][0].y) / 2.0f;
+                            p.y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+//                        p.y = 0;
+                        }
+                    }
+                }
+            }
             mesh->vertices.push_back(p);
             mesh->normals.push_back(getPointNormal(x, z));
 
+            // Generate a new line of elements each line par the edge
             if (x != 0 && z != 0) {
                 // Generate triangle elements using indices of E, S & W points
                 unsigned int iWest = i - (constants::CHUNK_SIZE / levelOfDetail);
@@ -121,22 +188,37 @@ void Chunk::updateMesh() {
     unsigned int iLastInsideVert = i - 1;
 
     // Create one more strip to join with NW, N, NE chunks (if not null)
+
     // Firstly create the NW strip (if NW chunk exists / loaded)
-    Chunk* chunkNW = world->tryGetChunk(posX + 1, posZ);
     if (chunkNW != NULL) {
-        float pX = cX + constants::CHUNK_SIZE;
-        int x = (constants::CHUNK_SIZE / levelOfDetail) - 1;
+        float pX = cX + constants::CHUNK_SIZE * constants::TILE_SIZE;
         for (int z = 0; z < constants::CHUNK_SIZE; z += levelOfDetail) {
             float pZ = cZ + z * constants::TILE_SIZE;
             glm::vec3 p = glm::vec3(pX, chunkNW->getTile(0, z)->y, pZ);
+            // Check for LOD boundaries on edge vertices .. as p.y may need to be modified to prevent seams in LOD levels
+            if (z != 0 && z < constants::CHUNK_SIZE
+                && chunkNW->levelOfDetail > levelOfDetail) {
+                /* if
+                 * -- we are on the z boundary (excluding corners)
+                 * -- and we are not on the edge of the map
+                 * -- and the level of detail decreases
+                 */
+                if ((z - levelOfDetail) % (levelOfDetail * 2) == 0)
+                    if (z + levelOfDetail < constants::CHUNK_SIZE) {
+                        double avg = (chunkNW->getTile(0, z - levelOfDetail)->y + chunkNW->getTile(0, z + levelOfDetail)->y) / 2.0f;
+                        p.y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+//                        p.y = 0;
+                    }
+            }
             mesh->vertices.push_back(p);
             mesh->normals.push_back(getPointNormal(constants::CHUNK_SIZE, z));
 
             if (z != 0) {
                 // Generate triangle elements using indices of E, S & W points
                 unsigned int iWest = i - 1;
-                unsigned int iEast = x * (constants::CHUNK_SIZE / levelOfDetail) + (z / levelOfDetail);
-                unsigned int iSouth = x * (constants::CHUNK_SIZE / levelOfDetail) + ((z / levelOfDetail) - 1);
+                unsigned int iEast = pow((constants::CHUNK_SIZE / levelOfDetail), 2) -
+                        (constants::CHUNK_SIZE / levelOfDetail - (z / levelOfDetail));
+                unsigned int iSouth = iEast - 1;
 
                 mesh->elements.push_back(i);
                 mesh->elements.push_back(iWest);
@@ -152,20 +234,35 @@ void Chunk::updateMesh() {
     }
     unsigned int iLastNW = i - 1;
     // Then create the NE strip (if NE chunk exists / loaded)
-    Chunk* chunkNE = world->tryGetChunk(posX, posZ + 1);
     if (chunkNE != NULL) {
         float pZ = cZ + constants::CHUNK_SIZE;
-        int z = (constants::CHUNK_SIZE / levelOfDetail) - 1;
         for (int x = 0; x < constants::CHUNK_SIZE; x += levelOfDetail) {
             float pX = cX + x * constants::TILE_SIZE;
             glm::vec3 p = glm::vec3(pX, chunkNE->getTile(x, 0)->y, pZ);
+            // Check for LOD boundaries on edge vertices .. as p.y may need to be modified to prevent seams in LOD levels
+            if (x != 0 && x < constants::CHUNK_SIZE
+                && chunkNE->levelOfDetail > levelOfDetail) {
+                /* if
+                 * -- we are on the x boundary (excluding corners)
+                 * -- and we are not on the edge of the map
+                 * -- and the level of detail decreases
+                 *
+                 * then we must seam the tear by making every second emitted vertex (vertex without equivalent vertex
+                 * in neighbouring chunk) along the boundary's height equal to the average of it's emitted neighbours */
+                if ((x - levelOfDetail) % (levelOfDetail * 2) == 0)
+                    if (x + levelOfDetail < constants::CHUNK_SIZE) {
+                        double avg = (chunkNE->getTile(x - levelOfDetail, 0)->y + chunkNE->getTile(x + levelOfDetail, 0)->y) / 2.0f;
+                        p.y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+//                    p.y = 0;
+                    }
+            }
             mesh->vertices.push_back(p);
             mesh->normals.push_back(getPointNormal(x, constants::CHUNK_SIZE));
 
             if (x != 0) {
                 // Generate triangle elements using indices of E, S & W points
-                unsigned int iWest = (x / levelOfDetail) * (constants::CHUNK_SIZE / levelOfDetail) + z;
-                unsigned int iSouth = ((x / levelOfDetail) - 1) * (constants::CHUNK_SIZE / levelOfDetail) + z;
+                unsigned int iWest = (x / levelOfDetail + 1) * (constants::CHUNK_SIZE / levelOfDetail) - 1;
+                unsigned int iSouth = iWest - constants::CHUNK_SIZE / levelOfDetail;
                 unsigned int iEast = i - 1;
 
                 mesh->elements.push_back(i);
@@ -181,13 +278,23 @@ void Chunk::updateMesh() {
         }
     }
     unsigned int iLastNE = i - 1;
-    // Lastly create the Northern most point using the final verts from both
+    // Lastly create the Northern most point using the final verts from NW, NE and N chunks
     // (if both NW & NE chunks are loaded)
     Chunk* chunkN = world->tryGetChunk(posX + 1, posZ + 1);
     if (chunkNW != NULL && chunkNE != NULL && chunkN != NULL) {
         float pX = cX + constants::CHUNK_SIZE;
         float pZ = cZ + constants::CHUNK_SIZE;
         glm::vec3 p = glm::vec3(pX, chunkN->getTile(0, 0)->y, pZ);
+
+        if (chunkNW->levelOfDetail > levelOfDetail) {
+            double avg = (chunkNW->getTile(0, constants::CHUNK_SIZE - 2 * levelOfDetail)->y + chunkN->getTile(0, 0)->y) / 2.0f;
+            mesh->vertices[iLastNW].y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+        }
+        if (chunkNE->levelOfDetail > levelOfDetail) {
+            double avg = (chunkNE->getTile(constants::CHUNK_SIZE - 2 * levelOfDetail, 0)->y + chunkN->getTile(0, 0)->y) / 2.0f;
+            mesh->vertices[iLastNE].y = static_cast<float>(avg + LOD_SEEM_HEIGHT);
+        }
+
         mesh->vertices.push_back(p);
         mesh->normals.push_back(getPointNormal(constants::CHUNK_SIZE, constants::CHUNK_SIZE));
 

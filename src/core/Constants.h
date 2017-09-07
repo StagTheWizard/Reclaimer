@@ -25,15 +25,25 @@ namespace constants {
     static int LOAD_DISTANCE = 14;
     static int UNLOAD_DISTANCE = 16;
 
+//    const int LOD_1ST = 1;
+//    const int LOD_2ND = 2;
+//    const int LOD_3RD = 4;
+//    const int LOD_4TH = 8;
+//    const int LOD_5TH = 8;
+//    static int LOD_1ST_DISTANCE = 2;
+//    static int LOD_2ND_DISTANCE = 3;
+//    static int LOD_3RD_DISTANCE = 4;
+//    static int LOD_4TH_DISTANCE = 5;
+
     const int LOD_1ST = 1;
     const int LOD_2ND = 2;
     const int LOD_3RD = 4;
-    const int LOD_4TH = 8;
-    const int LOD_5TH = 16;
-    static int LOD_1ST_DISTANCE = 6;
-    static int LOD_2ND_DISTANCE = 8;
-    static int LOD_3RD_DISTANCE = 10;
-    static int LOD_4TH_DISTANCE = 12;
+    const int LOD_4TH = 6;
+    const int LOD_5TH = 8;
+    static int LOD_1ST_DISTANCE = 4;
+    static int LOD_2ND_DISTANCE = 6;
+    static int LOD_3RD_DISTANCE = 8;
+    static int LOD_4TH_DISTANCE = 10;
 }
 
 #endif //RECLAIMER_CONSTANTS_H

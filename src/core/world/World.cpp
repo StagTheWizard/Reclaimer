@@ -10,6 +10,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/filesystem.hpp>
+#include <iostream>
 
 #include "Chunk.h"
 #include "TileTypes.h"
@@ -164,14 +165,18 @@ void World::updateLod(glm::vec3 cameraPos) {
 
 
 void World::updateMeshes() {
+    int nMeshesRegenerated = 0;
     for (int z = depth - 1; z >= 0; z--) {
         for (int x = width - 1; x >= 0; x--) {
             Chunk* chunk = tryGetChunk(x, z);
             if (chunk != NULL && chunk->needsMeshRegenerated()) {
                 chunk->updateMesh();
+                nMeshesRegenerated++;
             }
         }
     }
+    if (nMeshesRegenerated > 0)
+        std::cout << nMeshesRegenerated << " meshes regenerated" << std::endl;
 }
 
 
