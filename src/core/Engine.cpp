@@ -147,7 +147,7 @@ void Engine::draw() {
     State* currentState = states[states.size() - 1];
     // push OpenGL state
     // clear the buffers
-    glClearColor(0.3f, 0.3f, 0.35f, 1);
+    glClearColor(0.65f, 0.65f, 0.75f, 1);
 
     glViewport(0, 0, constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
