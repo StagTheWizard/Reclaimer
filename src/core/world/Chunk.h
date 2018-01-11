@@ -56,6 +56,10 @@ private:
     int levelOfDetail = constants::LOD_1ST;
 
     Tile tiles[constants::CHUNK_SIZE][constants::CHUNK_SIZE];
+
+    // Array of tile Ids for uniform rendering (may deprecate tiles array)
+    int tileIds[constants::CHUNK_SIZE][constants::CHUNK_SIZE];
+
     Chunk();
 
     void setTileHeight(int x, int z, int height);

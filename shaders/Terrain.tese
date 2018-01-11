@@ -1,8 +1,18 @@
 #version 330
 
+const int CHUNK_SIZE = 32;
+
+struct Tile {
+    int typeId;
+    int x;
+    int z;
+    float y;
+};
+
 layout(triangles, equal_spacing, ccw) in;
 
 uniform mat4 mvpMatrix;
+uniform Tile tiles[CHUNK_SIZE * CHUNK_SIZE];
 
 in vec3 patchNormal [];
 

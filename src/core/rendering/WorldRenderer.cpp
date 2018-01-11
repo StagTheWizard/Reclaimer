@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <glm/vec3.hpp>
 #include <core/world/TerrainMesh.h>
+#include <core/world/Chunk.h>
 
 
 WorldRenderer::WorldRenderer(Engine *engine) {
@@ -34,12 +35,13 @@ int WorldRenderer::initialiseShaders() {
 }
 
 
-void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
+void WorldRenderer::renderChunk(Chunk *chunk) {
     terrainShader->activate();
     glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
     glm::mat4 mvMatrix = viewMatrix * modelMatrix;
     glm::mat4 normalMatrix = glm::transpose(glm::inverse(mvMatrix));
-    terrainShader->updateUniforms(modelMatrix, viewMatrix, mvMatrix, mvpMatrix, normalMatrix, cameraPosition, sun.position);
+    terrainShader->updateUniforms(modelMatrix, viewMatrix, mvMatrix, mvpMatrix, normalMatrix, cameraPosition,
+                                  sun.position, chunk->tileIds);
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -49,31 +51,31 @@ void WorldRenderer::renderTerrain(TerrainMesh *mesh) {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // First VBO
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->vertices.size(), &mesh->vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * chunk->mesh->vertices.size(), &chunk->mesh->vertices[0], GL_STATIC_DRAW);
 //    glBufferData(GL_ARRAY_BUFFER, sizeof(testVertices), testVertices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->normals.size(), &mesh->normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * chunk->mesh->normals.size(), &chunk->mesh->normals[0], GL_STATIC_DRAW);
 //
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->elements.size(), &mesh->elements[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(glm::vec3) * chunk->mesh->elements.size(), &chunk->mesh->elements[0], GL_STATIC_DRAW);
 
 
     glBindVertexArray(vao);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
-    glDrawElements(GL_PATCHES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_PATCHES, chunk->mesh->elements.size(), GL_UNSIGNED_INT, NULL);
 //    glDrawElements(GL_TRIANGLES, mesh->elements.size(), GL_UNSIGNED_INT, NULL);
 
     glDisable(GL_DEPTH_TEST);

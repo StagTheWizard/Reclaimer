@@ -25,7 +25,9 @@ Chunk::Chunk(World *world, int posX, int posZ) {
         for (int x = 0; x < constants::CHUNK_SIZE; x++) {
             float yGen = world->noiseGenerator->GetSimplexFractal(baseX + x, baseZ + z);
             float y = (yGen + 1) * static_cast<float>(constants::WORLD_HEIGHT / 2);
-            this->tiles[z][x] = Tile(TileTypes::Dirt.id, x, z, y);
+            int typeId = TileTypes::Dirt.id;
+            tiles[z][x] = Tile(typeId, x, z, y);
+            tileIds[z][x] = typeId;
         }
     }
 
@@ -57,6 +59,7 @@ void Chunk::setTile(int x, int z, int typeId) {
     if (tiles[z][x].typeId == typeId)
         return;
     tiles[z][x].typeId = typeId;
+    tileIds[z][x] = typeId;
     modified = true;
     regenerateMesh = true;
 }

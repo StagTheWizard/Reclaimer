@@ -76,7 +76,6 @@ int World::getWidth() {
 void World::update(glm::vec3 cameraPos) {
     updateLoading(cameraPos);
     updateLod(cameraPos);
-    updateMeshes();
 }
 
 
@@ -161,22 +160,6 @@ void World::updateLod(glm::vec3 cameraPos) {
             }
         }
     }
-}
-
-
-void World::updateMeshes() {
-    int nMeshesRegenerated = 0;
-    for (int z = depth - 1; z >= 0; z--) {
-        for (int x = width - 1; x >= 0; x--) {
-            Chunk* chunk = tryGetChunk(x, z);
-            if (chunk != NULL && chunk->needsMeshRegenerated()) {
-                chunk->updateMesh();
-                nMeshesRegenerated++;
-            }
-        }
-    }
-    if (nMeshesRegenerated > 0)
-        std::cout << nMeshesRegenerated << " meshes regenerated" << std::endl;
 }
 
 

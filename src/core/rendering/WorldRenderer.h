@@ -15,6 +15,7 @@
 
 class Engine;
 class TerrainMesh;
+class Chunk;
 
 
 class WorldRenderer {
@@ -37,7 +38,7 @@ public:
     ~WorldRenderer();
 
     int initialise();
-    void renderTerrain(TerrainMesh *mesh);
+    void renderChunk(Chunk *chunk);
 protected:
 private:
     Engine *engine;
@@ -47,6 +48,7 @@ private:
     GLuint vertexBuffer;
     GLuint normalBuffer;
     GLuint elementBuffer;
+    GLuint tileBuffer;
 
     int initialiseShaders();
 };

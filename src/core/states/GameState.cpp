@@ -90,7 +90,7 @@ void GameState::draw() {
         for (int x = 0; x < world->getWidth(); x++) {
             Chunk* chunk = world->getChunk(x, z);
             if (chunk != NULL)
-                engine->worldRenderer->renderTerrain(chunk->mesh);
+                engine->worldRenderer->renderChunk(chunk);
         }
     }
 

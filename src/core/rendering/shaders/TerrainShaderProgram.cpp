@@ -3,6 +3,7 @@
 //
 
 #include <glm/gtc/type_ptr.hpp>
+#include <core/Constants.h>
 #include "TerrainShaderProgram.h"
 
 
@@ -31,20 +32,14 @@ void TerrainShaderProgram::bindLocations() {
 
 
 void TerrainShaderProgram::bindUniforms() {
-    GLint modelMatrixLoc = glGetUniformLocation(program, "modelMatrix");
-    uniformModelMatrix = (GLuint) modelMatrixLoc;
-    GLint viewMatrixLoc = glGetUniformLocation(program, "viewMatrix");
-    uniformViewMatrix = (GLuint) viewMatrixLoc;
-    GLint modelViewMatrixLoc = glGetUniformLocation(program, "modelViewMatrix");
-    uniformModelViewMatrix = (GLuint) modelViewMatrixLoc;
-    GLint mvpMatrixLoc = glGetUniformLocation(program, "mvpMatrix");
-    uniformMvpMatrix = (GLuint) mvpMatrixLoc;
-    GLint normalMatrixLoc = glGetUniformLocation(program, "normalMatrix");
-    uniformNormalMatrix = (GLuint) normalMatrixLoc;
-    GLint cameraPositionLoc = glGetUniformLocation(program, "cameraPosition");
-    uniformCameraPosition = (GLuint) cameraPositionLoc;
-    GLint lightPositionLoc = glGetUniformLocation(program, "lightPosition");
-    uniformLightPosition = (GLuint) lightPositionLoc;
+    uniformModelMatrix = (GLuint) glGetUniformLocation(program, "modelMatrix");
+    uniformViewMatrix = (GLuint) glGetUniformLocation(program, "viewMatrix");
+    uniformModelViewMatrix = (GLuint) glGetUniformLocation(program, "modelViewMatrix");
+    uniformMvpMatrix = (GLuint) glGetUniformLocation(program, "mvpMatrix");
+    uniformNormalMatrix = (GLuint) glGetUniformLocation(program, "normalMatrix");
+    uniformCameraPosition = (GLuint) glGetUniformLocation(program, "cameraPosition");
+    uniformLightPosition = (GLuint) glGetUniformLocation(program, "lightPosition");
+    uniformTilesArray = (GLuint) glGetUniformLocation(program, "tiles");
 
     uniformsBound = true;
 }
@@ -52,7 +47,7 @@ void TerrainShaderProgram::bindUniforms() {
 
 void TerrainShaderProgram::updateUniforms(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 modelViewMatrix,
                                           glm::mat4 mvpMatrix, glm::mat4 normalMatrix, glm::vec4 cameraPosition,
-                                          glm::vec4 lightPos) {
+                                          glm::vec4 lightPos, int tiles[]) {
     glUseProgram(program);
     glUniformMatrix4fv(uniformModelMatrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
     glUniformMatrix4fv(uniformViewMatrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -61,4 +56,5 @@ void TerrainShaderProgram::updateUniforms(glm::mat4 modelMatrix, glm::mat4 viewM
     glUniformMatrix4fv(uniformNormalMatrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
     glUniform4fv(uniformCameraPosition, 1, glm::value_ptr(cameraPosition));
     glUniform4fv(uniformLightPosition, 1, glm::value_ptr(lightPos));
+    glUniform1iv(uniformTilesArray, constants::CHUNK_SIZE * constants::CHUNK_SIZE, &tiles[0]);
 }

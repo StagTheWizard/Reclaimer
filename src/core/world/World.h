@@ -56,7 +56,6 @@ private:
 
     void updateLoading(glm::vec3 cameraPos);
     void updateLod(glm::vec3 cameraPos);
-    void updateMeshes();
 
     void saveChunk(int x, int z);
     void saveChunk(Chunk* chunk);
